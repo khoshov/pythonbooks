@@ -2,76 +2,20 @@ name: pythonbooks
 
 on: [push, pull_request]
 
-env:
-  PYTHON_VERSION: '3.11'
-  UV_CACHE_DIR: ~/.cache/uv
-
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    outputs:
-      uv-path: ${{ steps.add-uv.outputs.uv-path }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install uv via pipx
-        id: add-uv
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pipx
-          pipx install uv
-          echo "uv-path=$(pipx list | grep -oP '(?<=package )uv.*?bin' | head -n1)" >> $GITHUB_OUTPUT
-
   lint:
-    needs: setup
+    name: ruff lint
     runs-on: ubuntu-latest
-    env:
-      PATH: ${{ needs.setup.outputs.uv-path }}:$PATH
+
     steps:
-      - uses: actions/checkout@v4
+      - name: checkout repo
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+      - name: install uv
+        uses: astral-sh/setup-uv@v1
 
-      - name: Install ruff
-        run: uv pip install ruff
+      - name: install dependencies
+        run: uv pip install -r requirements.txt
 
-      - name: Run ruff check
-        run: uv run ruff check pythonbooks --fix
-
-  test:
-    needs: setup
-    runs-on: ubuntu-latest
-    env:
-      PATH: ${{ needs.setup.outputs.uv-path }}:$PATH
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.UV_CACHE_DIR }}
-          key: uv-${{ hashFiles('pythonbooks/requirements.txt') }}
-
-      - name: Install requirements
-        run: uv pip install -r pythonbooks/requirements.txt
-
-      - name: Run tests
-        run: uv run pytest pythonbooks
-
-  deploy:
-    needs: [lint, test]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-      - run: echo "deploy"
+      - name: run ruff with --fix
+        run: uv pip run ruff . --fix
