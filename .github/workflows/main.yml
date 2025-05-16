@@ -18,7 +18,8 @@ jobs:
       - name: install ruff via uv
         run: |
           pip install uv
-          uv pip install ruff
+          uv venv .venv
+          UV_VENV=.venv uv pip install ruff
 
       - name: run ruff with autofix
-        run: ruff check --fix .
+        run: UV_VENV=.venv uv run -- ruff check . --fix
