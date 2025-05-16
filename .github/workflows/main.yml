@@ -40,9 +40,11 @@ jobs:
 
       - name: install ruff
         run: ${{ needs.setup.outputs.uv-path }}/uv pip install ruff
+        working-directory: ./pythonbooks
 
-      - name: run ruff
+      - name: Run ruff
         run: ${{ needs.setup.outputs.uv-path }}/uv run ruff check .
+        working-directory: ./pythonbooks
 
   test:
     needs: setup
@@ -57,13 +59,15 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.UV_CACHE_DIR }}
-          key: uv-${{ hashFiles('**/pyproject.toml') }}
+          key: uv-${{ hashFiles('pythonbooks/requirements.txt') }}
 
       - name: install dependencies
-        run: ${{ needs.setup.outputs.uv-path }}/uv pip install pytest
+        run: ${{ needs.setup.outputs.uv-path }}/uv pip install -r requirements.txt
+        working-directory: ./pythonbooks
 
       - name: run tests
         run: ${{ needs.setup.outputs.uv-path }}/uv run pytest
+        working-directory: ./pythonbooks
 
   deploy:
     needs: [lint, test]
