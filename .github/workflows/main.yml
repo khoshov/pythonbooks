@@ -10,18 +10,21 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      uv-path: ${{ steps.setup-uv.outputs.uv-path }}
+      uv-path: ${{ steps.add-uv.outputs.uv-path }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install uv
-        id: setup-uv
+      - name: Install uv via pipx
+        id: add-uv
         run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "uv-path=$HOME/.cargo/bin" >> $GITHUB_OUTPUT
+          python -m pip install --upgrade pip
+          python -m pip install pipx
+          pipx install uv
+          echo "uv-path=$(pipx list | grep -oP '(?<=package )uv.*?bin' | head -n1)" >> $GITHUB_OUTPUT
 
   lint:
     needs: setup
@@ -30,11 +33,15 @@ jobs:
       PATH: ${{ needs.setup.outputs.uv-path }}:$PATH
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Run ruff with autofix
+      - name: Install ruff
+        run: uv pip install ruff
+
+      - name: Run ruff check
         run: uv run ruff check pythonbooks --fix
 
   test:
@@ -44,6 +51,7 @@ jobs:
       PATH: ${{ needs.setup.outputs.uv-path }}:$PATH
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -54,7 +62,7 @@ jobs:
           path: ${{ env.UV_CACHE_DIR }}
           key: uv-${{ hashFiles('pythonbooks/requirements.txt') }}
 
-      - name: Install dependencies from requirements.txt
+      - name: Install requirements
         run: uv pip install -r pythonbooks/requirements.txt
 
       - name: Run tests
