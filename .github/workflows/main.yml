@@ -17,12 +17,14 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: install uv
+      - name: Install uv
         id: setup-uv
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "uv-path=$HOME/.cargo/bin" >> $GITHUB_OUTPUT
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Add uv to PATH
+        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
   lint:
     needs: setup
@@ -33,18 +35,14 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: verify uv installation
-        run: |
-          echo "UV path: ${{ needs.setup.outputs.uv-path }}"
-          ls -la ${{ needs.setup.outputs.uv-path }}
+      - name: Add uv to PATH
+        run: echo "${{ needs.setup.outputs.uv-path }}" >> $GITHUB_PATH
 
-      - name: install ruff
+      - name: Install ruff
         run: ${{ needs.setup.outputs.uv-path }}/uv pip install ruff
-        working-directory: ./pythonbooks
 
       - name: Run ruff
-        run: ${{ needs.setup.outputs.uv-path }}/uv run ruff check .
-        working-directory: ./pythonbooks
+        run: ${{ needs.setup.outputs.uv-path }}/uv run ruff check . --fix
 
   test:
     needs: setup
@@ -55,19 +53,20 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: cache dependencies
+      - name: Add uv to PATH
+        run: echo "${{ needs.setup.outputs.uv-path }}" >> $GITHUB_PATH
+
+      - name: Cache dependencies
         uses: actions/cache@v3
         with:
           path: ${{ env.UV_CACHE_DIR }}
-          key: uv-${{ hashFiles('pythonbooks/requirements.txt') }}
+          key: uv-${{ hashFiles('**/requirements.txt') }}
 
-      - name: install dependencies
+      - name: Install dependencies from requirements.txt
         run: ${{ needs.setup.outputs.uv-path }}/uv pip install -r requirements.txt
-        working-directory: ./pythonbooks
 
-      - name: run tests
+      - name: Run tests
         run: ${{ needs.setup.outputs.uv-path }}/uv run pytest
-        working-directory: ./pythonbooks
 
   deploy:
     needs: [lint, test]
@@ -75,4 +74,4 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
-      - run: echo "pass deploy"
+      - run: echo "deploy"
