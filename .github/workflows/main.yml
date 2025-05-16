@@ -1,0 +1,77 @@
+name: pythonbooks
+
+on: [push, pull_request]
+
+env:
+  PYTHON_VERSION: '3.11'
+  UV_CACHE_DIR: ~/.cache/uv
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      uv-path: ${{ steps.setup-uv.outputs.uv-path }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        id: setup-uv
+        run: |
+          curl -Ls https://astral.sh/uv/install.sh | bash
+          echo "uv-path=$HOME/.cargo/bin" >> $GITHUB_OUTPUT
+
+      - name: Add uv to PATH
+        run: echo "PATH=${{ steps.setup-uv.outputs.uv-path }}:$PATH" >> $GITHUB_PATH
+
+  lint:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Add uv to PATH
+        run: echo "PATH=${{ needs.setup.outputs.uv-path }}:$PATH" >> $GITHUB_PATH
+
+      - name: Install ruff
+        run: uv pip install ruff
+
+      - name: Run ruff fix
+        run: uv run ruff check . --fix
+
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Add uv to PATH
+        run: echo "PATH=${{ needs.setup.outputs.uv-path }}:$PATH" >> $GITHUB_PATH
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.UV_CACHE_DIR }}
+          key: uv-${{ hashFiles('**/pyproject.toml') }}
+
+      - name: Install dependencies
+        run: uv pip install pytest
+
+      - name: Run tests
+        run: uv run pytest
+
+  deploy:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "deploy"
