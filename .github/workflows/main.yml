@@ -6,27 +6,23 @@ jobs:
   lint:
     name: ruff lint with fix
     runs-on: ubuntu-latest
-
     steps:
       - name: checkout repo
         uses: actions/checkout@v4
 
-      - name: install uv
-        uses: astral-sh/setup-uv@v1
-
-      - name: create virtual environment
-        run: uv venv .venv
-
-      - name: cache uv
-        uses: actions/cache@v4
+      - name: set up python
+        uses: actions/setup-python@v5
         with:
-          path: ~/.cache/uv
-          key: ${{ runner.os }}-uv-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-uv-
+          python-version: "3.x"
 
-      - name: install dependencies
-        run: UV_VENV=.venv uv pip install -r requirements.txt
+      - name: install uv
+        run: pip install uv
 
-      - name: run ruff with --fix
-        run: UV_VENV=.venv uv run -- ruff . --fix
+      - name: install dependencies with uv
+        run: uv pip install -r pythonbooks/requirements.txt
+
+      - name: install ruff
+        run: uv pip install ruff
+
+      - name: run ruff with autofix
+        run: ruff check --fix pythonbooks/
