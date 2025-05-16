@@ -19,10 +19,10 @@ jobs:
         run: pip install uv
 
       - name: install dependencies with uv
-        run: uv pip install -r pythonbooks/requirements.txt
+        run: uv pip install -r requirements.txt
 
       - name: install ruff
         run: uv pip install ruff
 
       - name: run ruff with autofix
-        run: ruff check --fix pythonbooks/
+        run: ruff check --fix .
