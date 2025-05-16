@@ -29,4 +29,4 @@ jobs:
         run: UV_VENV=.venv uv pip install -r requirements.txt
 
       - name: run ruff with --fix
-        run: UV_VENV=.venv uv pip run ruff . --fix
+        run: UV_VENV=.venv uv run ruff . --fix
