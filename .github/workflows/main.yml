@@ -17,14 +17,12 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install uv
+      - name: install uv
         id: setup-uv
         run: |
-          curl -Ls https://astral.sh/uv/install.sh | bash
+          curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "uv-path=$HOME/.cargo/bin" >> $GITHUB_OUTPUT
-
-      - name: Add uv to PATH
-        run: echo "PATH=${{ steps.setup-uv.outputs.uv-path }}:$PATH" >> $GITHUB_PATH
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
   lint:
     needs: setup
@@ -35,14 +33,16 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Add uv to PATH
-        run: echo "PATH=${{ needs.setup.outputs.uv-path }}:$PATH" >> $GITHUB_PATH
+      - name: verify uv installation
+        run: |
+          echo "UV path: ${{ needs.setup.outputs.uv-path }}"
+          ls -la ${{ needs.setup.outputs.uv-path }}
 
-      - name: Install ruff
-        run: uv pip install ruff
+      - name: install ruff
+        run: ${{ needs.setup.outputs.uv-path }}/uv pip install ruff
 
-      - name: Run ruff fix
-        run: uv run ruff check . --fix
+      - name: run ruff
+        run: ${{ needs.setup.outputs.uv-path }}/uv run ruff check .
 
   test:
     needs: setup
@@ -53,20 +53,17 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Add uv to PATH
-        run: echo "PATH=${{ needs.setup.outputs.uv-path }}:$PATH" >> $GITHUB_PATH
-
-      - name: Cache dependencies
+      - name: cache dependencies
         uses: actions/cache@v3
         with:
           path: ${{ env.UV_CACHE_DIR }}
           key: uv-${{ hashFiles('**/pyproject.toml') }}
 
-      - name: Install dependencies
-        run: uv pip install pytest
+      - name: install dependencies
+        run: ${{ needs.setup.outputs.uv-path }}/uv pip install pytest
 
-      - name: Run tests
-        run: uv run pytest
+      - name: run tests
+        run: ${{ needs.setup.outputs.uv-path }}/uv run pytest
 
   deploy:
     needs: [lint, test]
@@ -74,4 +71,4 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
-      - run: echo "deploy"
+      - run: echo "pass deploy"
