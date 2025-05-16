@@ -23,50 +23,42 @@ jobs:
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "uv-path=$HOME/.cargo/bin" >> $GITHUB_OUTPUT
 
-      - name: Add uv to PATH
-        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
   lint:
     needs: setup
     runs-on: ubuntu-latest
+    env:
+      PATH: ${{ needs.setup.outputs.uv-path }}:$PATH
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Add uv to PATH
-        run: echo "${{ needs.setup.outputs.uv-path }}" >> $GITHUB_PATH
-
-      - name: Install ruff
-        run: ${{ needs.setup.outputs.uv-path }}/uv pip install ruff
-
-      - name: Run ruff
-        run: ${{ needs.setup.outputs.uv-path }}/uv run ruff check . --fix
+      - name: Run ruff with autofix
+        run: uv run ruff check pythonbooks --fix
 
   test:
     needs: setup
     runs-on: ubuntu-latest
+    env:
+      PATH: ${{ needs.setup.outputs.uv-path }}:$PATH
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Add uv to PATH
-        run: echo "${{ needs.setup.outputs.uv-path }}" >> $GITHUB_PATH
 
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
           path: ${{ env.UV_CACHE_DIR }}
-          key: uv-${{ hashFiles('**/requirements.txt') }}
+          key: uv-${{ hashFiles('pythonbooks/requirements.txt') }}
 
       - name: Install dependencies from requirements.txt
-        run: ${{ needs.setup.outputs.uv-path }}/uv pip install -r requirements.txt
+        run: uv pip install -r pythonbooks/requirements.txt
 
       - name: Run tests
-        run: ${{ needs.setup.outputs.uv-path }}/uv run pytest
+        run: uv run pytest pythonbooks
 
   deploy:
     needs: [lint, test]
