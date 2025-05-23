@@ -22,4 +22,4 @@ jobs:
           UV_VENV=.venv uv pip install ruff
 
       - name: run ruff with autofix
-        run: UV_VENV=.venv uv run -- ruff check . --fix
+        run: UV_VENV=.venv uv run -- ruff check .
