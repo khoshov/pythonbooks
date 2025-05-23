@@ -22,4 +22,4 @@ jobs:
           UV_VENV=.venv uv pip install ruff
 
       - name: run ruff
-        run: UV_VENV=.venv uv run -- ruff format --check .
+        run: UV_VENV=.venv uv run -- ruff format --check --fail .
