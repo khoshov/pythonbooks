@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   lint:
-    name: ruff lint with fix
+    name: ruff lint
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo
@@ -21,5 +21,11 @@ jobs:
           uv venv .venv
           UV_VENV=.venv uv pip install ruff
 
-      - name: run ruff with autofix
-        run: UV_VENV=.venv uv run -- ruff check . --fix
+      - name: run ruff check
+        run: UV_VENV=.venv uv run -- ruff check .
+
+      - name: check formatting
+        run: UV_VENV=.venv uv run -- ruff format --check .
+
+      - name: run ruff lint
+        run: UV_VENV=.venv uv run -- ruff check .
