@@ -89,3 +89,25 @@ uvx ruff check .  # Проверит все файлы в текущей дир�
 ```bash
 docker-compose up --build  # Соберет и запустит сервисы
 ```
+
+## Структура
+
+```python
+
+pythonbooks
+│
+├── .github/workflows
+│   └── ruff.yml
+│
+├── apps
+│   └── books
+│
+├── config
+│
+├── .gitignore
+├── .pre-commit-config.yaml
+├── manage.py
+├── requirements.txt - зависимости
+├── .env
+└── README.md
+```
