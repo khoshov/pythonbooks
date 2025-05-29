@@ -10,7 +10,6 @@ class Publisher(models.Model):
         max_length=255, blank=True, verbose_name="Сайт издательства"
     )
 
-
     class Meta:
         verbose_name = "Издательство"
         verbose_name_plural = "Издательства"
@@ -62,7 +61,6 @@ class Book(models.Model):
     language = models.CharField(max_length=50, verbose_name="Язык")
     tags = models.ManyToManyField(Tag, related_name="books", verbose_name="Теги")
     parsed_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата парсинга")
-
 
     class Meta:
         verbose_name = "Книга"
