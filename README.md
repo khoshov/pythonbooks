@@ -1,6 +1,41 @@
 
 [![Ruff](https://github.com/khoshov/pythonbooks/actions/workflows/ruff.yml/badge.svg)](https://github.com/khoshov/pythonbooks/actions/workflows/ruff.yml)
 
+## Структура
+
+<details>
+
+```python
+
+pythonbooks
+│
+├── .github/workflows/
+│   └── ruff.yml
+│
+├── apps/
+│   └── books/
+├── config/
+│
+├── .dockerignore
+├── .env
+├── .gitignore
+├── .pre-commit-config.yaml
+├── 🐳 docker-compose.yml
+├── 🐳 Dockerfile
+├── 🐳 entrypoint.sh - запускается внутри контейнера при старте, для миграций, запуска сервера и т.п.
+├── Makefile
+│
+├── manage.py
+│
+├── 📦 pyproject.toml
+├── README.md
+├── 📦 requirements.txt
+└── 📦 uv.lock
+```
+
+</details>
+
+---
 
 ## Установка и использование UV
 
@@ -87,27 +122,6 @@ uvx ruff check .  # Проверит все файлы в текущей дир�
 
 **Сборка и запуск контейнеров:**
 ```bash
-docker-compose up --build  # Соберет и запустит сервисы
-```
-
-## Структура
-
-```python
-
-pythonbooks
-│
-├── .github/workflows
-│   └── ruff.yml
-│
-├── apps
-│   └── books
-│
-├── config
-│
-├── .gitignore
-├── .pre-commit-config.yaml
-├── manage.py
-├── requirements.txt - зависимости
-├── .env
-└── README.md
+docker-compose build --no-cache
+docker-compose up  # Соберет и запустит сервисы
 ```

@@ -1,0 +1,11 @@
+services:
+  django:
+    build: .
+    container_name: pythonbooks
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+      - /app/.venv
