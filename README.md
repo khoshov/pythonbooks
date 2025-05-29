@@ -114,6 +114,12 @@ uvx ruff  # Установит последнюю версию Ruff
 ```bash
 uvx ruff check .  # Проверит все файлы в текущей директории
 ```
+
+для отправки в github без проверки локально, использовать:
+```bash
+git commit -m "feat: comment" --no-verify
+```
+
 </details>
 
 ---
