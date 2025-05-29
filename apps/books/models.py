@@ -10,6 +10,7 @@ class Publisher(models.Model):
         max_length=255, blank=True, verbose_name="Сайт издательства"
     )
 
+
     class Meta:
         verbose_name = "Издательство"
         verbose_name_plural = "Издательства"
@@ -34,7 +35,7 @@ class Author(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name="Название тега")
     slug = models.SlugField(max_length=100, unique=True, verbose_name="URL-имя")
-    color = models.CharField(max_length=20, verbose_name="цвет")
+    color = models.CharField(max_length=20, verbose_name="Цвет")
 
     class Meta:
         verbose_name = "Тег"
@@ -61,6 +62,7 @@ class Book(models.Model):
     language = models.CharField(max_length=50, verbose_name="Язык")
     tags = models.ManyToManyField(Tag, related_name="books", verbose_name="Теги")
     parsed_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата парсинга")
+
 
     class Meta:
         verbose_name = "Книга"
