@@ -1,18 +1,26 @@
 import os
 
-from dotenv import load_dotenv
 from pathlib import Path
 
+import environ
 
-load_dotenv()
-DJANGO_SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+# Initialize environment variables
+env = environ.Env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = DJANGO_SECRET_KEY
-DEBUG = True
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-ALLOWED_HOSTS = []
+# ========================
+# SECURITY CONFIGURATION
+# ========================
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env("DJANGO_SECRET_KEY")
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+# Hosts/domain names that this Django site can serve
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 
 # Application definition
@@ -46,6 +54,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
@@ -56,7 +65,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
+# =============
+# DATABASE
+# =============
+# Uses django-environ to automatically parse DB_* variables or DATABASE_URL
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -90,8 +102,12 @@ LANGUAGES = [
 ]
 TIME_ZONE = "UTC"
 USE_I18N = True
+USE_L10N = True
 USE_TZ = True
-
+# path to catalog files: .po, .mo
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, "locale"),
+]
 
 # =============
 # STATIC FILES

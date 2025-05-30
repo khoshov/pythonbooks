@@ -2,17 +2,18 @@
 FROM python:3.13-slim-bookworm
 
 # Install UV (ultra-fast Python package installer) from Astral.sh
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:v0.7.4 /uv /uvx /bin/
 
 # Ensure Python output is sent straight to terminal without buffering
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
 # ======================
 # SYSTEM DEPENDENCIES
 # ======================
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl gettext && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Set working directory inside container
 WORKDIR /app
