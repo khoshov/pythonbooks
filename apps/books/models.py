@@ -1,13 +1,19 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django_extensions.db.models import TimeStampedModel
 
 User = get_user_model()
 
 
 class Publisher(models.Model):
-    name = models.CharField(max_length=255, verbose_name="Название издательства")
+    name = models.CharField(
+        "Название издательства",
+        max_length=255,
+    )
     website = models.URLField(
-        max_length=255, blank=True, verbose_name="Сайт издательства"
+        "Сайт издательства",
+        max_length=255,
+        blank=True,
     )
 
     class Meta:
@@ -19,9 +25,18 @@ class Publisher(models.Model):
 
 
 class Author(models.Model):
-    first_name = models.CharField(max_length=100, verbose_name="Имя автора")
-    last_name = models.CharField(max_length=100, verbose_name="Фамилия автора")
-    bio = models.TextField(verbose_name="Биография")
+    first_name = models.CharField(
+        "Имя автора",
+        max_length=100,
+    )
+    last_name = models.CharField(
+        "Фамилия автора",
+        max_length=100,
+    )
+    bio = models.TextField(
+        "Биография",
+        blank=True,
+    )
 
     class Meta:
         verbose_name = "Автор"
@@ -32,9 +47,20 @@ class Author(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=100, unique=True, verbose_name="Название тега")
-    slug = models.SlugField(max_length=100, unique=True, verbose_name="URL-имя")
-    color = models.CharField(max_length=20, verbose_name="Цвет")
+    name = models.CharField(
+        "Название тега",
+        max_length=100,
+        unique=True,
+    )
+    slug = models.SlugField(
+        "URL-имя",
+        max_length=100,
+        unique=True,
+    )
+    color = models.CharField(
+        "Цвет",
+        max_length=20,
+    )
 
     class Meta:
         verbose_name = "Тег"
@@ -44,23 +70,50 @@ class Tag(models.Model):
         return self.name
 
 
-class Book(models.Model):
-    author = models.ManyToManyField(Author, related_name="books", verbose_name="Авторы")
+class Book(TimeStampedModel):
+    title = models.CharField(
+        "Название книги",
+        max_length=255,
+    )
+    description = models.TextField(
+        "Описание книги",
+    )
+    published_at = models.DateField(
+        "Дата публикации",
+    )
+    isbn_code = models.CharField(
+        "ISBN",
+        max_length=20,
+        unique=True,
+    )
+    total_pages = models.IntegerField(
+        "Количество страниц",
+    )
+    cover_image = models.URLField(
+        "Обложка книги",
+        max_length=255,
+    )
+    language = models.CharField(
+        "Язык",
+        max_length=50,
+    )
+
+    author = models.ManyToManyField(
+        Author,
+        verbose_name="Авторы",
+        related_name="books",
+    )
     publisher = models.ForeignKey(
         Publisher,
+        verbose_name="Издательство",
         on_delete=models.CASCADE,
         related_name="books",
-        verbose_name="Издательство",
     )
-    title = models.CharField(max_length=255, verbose_name="Название книги")
-    description = models.TextField(verbose_name="Описание книги")
-    publication_date = models.DateField(verbose_name="Дата публикации")
-    isbn = models.CharField(max_length=20, verbose_name="ISBN")
-    pages = models.IntegerField(verbose_name="Количество страниц")
-    cover_image = models.URLField(max_length=255, verbose_name="Обложка книги")
-    language = models.CharField(max_length=50, verbose_name="Язык")
-    tags = models.ManyToManyField(Tag, related_name="books", verbose_name="Теги")
-    parsed_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата парсинга")
+    tags = models.ManyToManyField(
+        Tag,
+        verbose_name="Теги",
+        related_name="books",
+    )
 
     class Meta:
         verbose_name = "Книга"
@@ -70,18 +123,23 @@ class Book(models.Model):
         return self.title
 
 
-class Comment(models.Model):
+class Comment(TimeStampedModel):
+    text = models.TextField(
+        "Комментарий",
+    )
+
     user = models.ForeignKey(
         User,
+        verbose_name="Пользователь",
         on_delete=models.CASCADE,
         related_name="comments",
-        verbose_name="Пользователь",
     )
     book = models.ForeignKey(
-        Book, on_delete=models.CASCADE, related_name="comments", verbose_name="Книга"
+        Book,
+        verbose_name="Книга",
+        on_delete=models.CASCADE,
+        related_name="comments",
     )
-    text = models.TextField(verbose_name="Комментарий")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     class Meta:
         verbose_name = "Комментарий"
