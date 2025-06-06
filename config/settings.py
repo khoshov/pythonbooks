@@ -22,7 +22,6 @@ DEBUG = True
 # Hosts/domain names that this Django site can serve
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -33,6 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "apps.books.apps.BooksConfig",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
@@ -90,7 +90,6 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
-
 
 # =================
 # INTERNATIONALIZATION
