@@ -2,7 +2,7 @@
 FROM python:3.13-slim-bookworm
 
 # Install UV (ultra-fast Python package installer) from Astral.sh
-COPY --from=ghcr.io/astral-sh/uv:v0.7.11 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Ensure Python output is sent straight to terminal without buffering
 ENV PYTHONUNBUFFERED=1 \
