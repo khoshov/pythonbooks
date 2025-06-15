@@ -7,7 +7,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -16,78 +15,207 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Author',
+            name="Author",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('first_name', models.CharField(max_length=100, verbose_name='Имя автора')),
-                ('last_name', models.CharField(max_length=100, verbose_name='Фамилия автора')),
-                ('bio', models.TextField(blank=True, verbose_name='Биография')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "first_name",
+                    models.CharField(max_length=100, verbose_name="Имя автора"),
+                ),
+                (
+                    "last_name",
+                    models.CharField(max_length=100, verbose_name="Фамилия автора"),
+                ),
+                ("bio", models.TextField(blank=True, verbose_name="Биография")),
             ],
             options={
-                'verbose_name': 'Автор',
-                'verbose_name_plural': 'Авторы',
+                "verbose_name": "Автор",
+                "verbose_name_plural": "Авторы",
             },
         ),
         migrations.CreateModel(
-            name='Publisher',
+            name="Publisher",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, verbose_name='Название издательства')),
-                ('website', models.URLField(blank=True, max_length=255, verbose_name='Сайт издательства')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        max_length=255, verbose_name="Название издательства"
+                    ),
+                ),
+                (
+                    "website",
+                    models.URLField(
+                        blank=True, max_length=255, verbose_name="Сайт издательства"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Издательство',
-                'verbose_name_plural': 'Издательства',
+                "verbose_name": "Издательство",
+                "verbose_name_plural": "Издательства",
             },
         ),
         migrations.CreateModel(
-            name='Tag',
+            name="Tag",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True, verbose_name='Название тега')),
-                ('slug', models.SlugField(max_length=100, unique=True, verbose_name='URL-имя')),
-                ('color', models.CharField(max_length=20, verbose_name='Цвет')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        max_length=100, unique=True, verbose_name="Название тега"
+                    ),
+                ),
+                (
+                    "slug",
+                    models.SlugField(
+                        max_length=100, unique=True, verbose_name="URL-имя"
+                    ),
+                ),
+                ("color", models.CharField(max_length=20, verbose_name="Цвет")),
             ],
             options={
-                'verbose_name': 'Тег',
-                'verbose_name_plural': 'Теги',
+                "verbose_name": "Тег",
+                "verbose_name_plural": "Теги",
             },
         ),
         migrations.CreateModel(
-            name='Book',
+            name="Book",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', django_extensions.db.fields.CreationDateTimeField(auto_now_add=True, verbose_name='created')),
-                ('modified', django_extensions.db.fields.ModificationDateTimeField(auto_now=True, verbose_name='modified')),
-                ('title', models.CharField(max_length=255, verbose_name='Название книги')),
-                ('description', models.TextField(verbose_name='Описание книги')),
-                ('published_at', models.DateField(verbose_name='Дата публикации')),
-                ('isbn_code', models.CharField(max_length=20, unique=True, verbose_name='ISBN')),
-                ('total_pages', models.IntegerField(verbose_name='Количество страниц')),
-                ('cover_image', models.URLField(max_length=255, verbose_name='Обложка книги')),
-                ('language', models.CharField(max_length=50, verbose_name='Язык')),
-                ('author', models.ManyToManyField(related_name='books', to='books.author', verbose_name='Авторы')),
-                ('publisher', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='books', to='books.publisher', verbose_name='Издательство')),
-                ('tags', models.ManyToManyField(related_name='books', to='books.tag', verbose_name='Теги')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    django_extensions.db.fields.CreationDateTimeField(
+                        auto_now_add=True, verbose_name="created"
+                    ),
+                ),
+                (
+                    "modified",
+                    django_extensions.db.fields.ModificationDateTimeField(
+                        auto_now=True, verbose_name="modified"
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(max_length=255, verbose_name="Название книги"),
+                ),
+                ("description", models.TextField(verbose_name="Описание книги")),
+                ("published_at", models.DateField(verbose_name="Дата публикации")),
+                (
+                    "isbn_code",
+                    models.CharField(max_length=20, unique=True, verbose_name="ISBN"),
+                ),
+                ("total_pages", models.IntegerField(verbose_name="Количество страниц")),
+                (
+                    "cover_image",
+                    models.URLField(max_length=255, verbose_name="Обложка книги"),
+                ),
+                ("language", models.CharField(max_length=50, verbose_name="Язык")),
+                (
+                    "author",
+                    models.ManyToManyField(
+                        related_name="books", to="books.author", verbose_name="Авторы"
+                    ),
+                ),
+                (
+                    "publisher",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="books",
+                        to="books.publisher",
+                        verbose_name="Издательство",
+                    ),
+                ),
+                (
+                    "tags",
+                    models.ManyToManyField(
+                        related_name="books", to="books.tag", verbose_name="Теги"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Книга',
-                'verbose_name_plural': 'Книги',
+                "verbose_name": "Книга",
+                "verbose_name_plural": "Книги",
             },
         ),
         migrations.CreateModel(
-            name='Comment',
+            name="Comment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', django_extensions.db.fields.CreationDateTimeField(auto_now_add=True, verbose_name='created')),
-                ('modified', django_extensions.db.fields.ModificationDateTimeField(auto_now=True, verbose_name='modified')),
-                ('text', models.TextField(verbose_name='Комментарий')),
-                ('book', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='books.book', verbose_name='Книга')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to=settings.AUTH_USER_MODEL, verbose_name='Пользователь')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    django_extensions.db.fields.CreationDateTimeField(
+                        auto_now_add=True, verbose_name="created"
+                    ),
+                ),
+                (
+                    "modified",
+                    django_extensions.db.fields.ModificationDateTimeField(
+                        auto_now=True, verbose_name="modified"
+                    ),
+                ),
+                ("text", models.TextField(verbose_name="Комментарий")),
+                (
+                    "book",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="comments",
+                        to="books.book",
+                        verbose_name="Книга",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="comments",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Пользователь",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Комментарий',
-                'verbose_name_plural': 'Комментарии',
+                "verbose_name": "Комментарий",
+                "verbose_name_plural": "Комментарии",
             },
         ),
     ]

@@ -64,6 +64,7 @@ class CommentAdmin(admin.ModelAdmin):
 
     get_created.short_description = "Дата создания"
 
+
 @admin.register(Publisher)
 class PublisherAdmin(admin.ModelAdmin):
     list_display = (
@@ -74,9 +75,7 @@ class PublisherAdmin(admin.ModelAdmin):
         "name",
         "website",
     )
-    ordering = (
-        "name",
-    )
+    ordering = ("name",)
 
 
 @admin.register(Tag)
@@ -90,6 +89,4 @@ class TagAdmin(admin.ModelAdmin):
         "name",
         "slug",
     )
-    ordering = (
-        "name",
-    )
+    ordering = ("name",)
