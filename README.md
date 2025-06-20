@@ -101,6 +101,9 @@ pythonbooks
 │
 ├── apps
 │   └── books
+│       └──scrapers
+│           ├── piter_publ/
+│           └── base_scraper.py
 │
 ├── config
 │
