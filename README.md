@@ -1,6 +1,41 @@
 
 [![Ruff](https://github.com/khoshov/pythonbooks/actions/workflows/ruff.yml/badge.svg)](https://github.com/khoshov/pythonbooks/actions/workflows/ruff.yml)
 
+## Структура
+
+<details>
+
+```python
+
+pythonbooks
+│
+├── .github/workflows/
+│   └── ruff.yml
+│
+├── apps/
+│   └── books/
+├── config/
+│
+├── .dockerignore
+├── .env
+├── .gitignore
+├── .pre-commit-config.yaml
+├── 🐳 docker-compose.yml
+├── 🐳 Dockerfile
+├── 🐳 entrypoint.sh - запускается внутри контейнера при старте, для миграций, запуска сервера и т.п.
+├── Makefile
+│
+├── manage.py
+│
+├── 📦 pyproject.toml
+├── README.md
+├── 📦 requirements.txt
+└── 📦 uv.lock
+```
+
+</details>
+
+---
 
 ## Установка и использование UV
 
@@ -68,7 +103,7 @@ uv run manage.py runserver  # Альтернатива python manage.py runserve
 <details>
 <summary>🔍 Интеграция с Ruff</summary>
 
-[Ruff](https://github.com/astral-sh/ruff) - это молниеносный линтер для Python, также разработанный Astral.
+### [Ruff](https://github.com/astral-sh/ruff) - это молниеносный линтер для Python, также разработанный Astral.
 
 **Установка Ruff через UV:**
 ```bash
@@ -79,6 +114,61 @@ uvx ruff  # Установит последнюю версию Ruff
 ```bash
 uvx ruff check .  # Проверит все файлы в текущей директории
 ```
+
+**Для отправки в github без проверки локально, использовать:**
+```bash
+git commit -m "feat: comment" --no-verify
+```
+
+**Полный список поддерживаемых опций ruff**
+```bash
+ruff check --help
+```
+
+```bash
+ruff check --fix .  # базовый линтинг с автоисправлением
+ruff check --exclude tests/ .  # игнорировать папку tests/
+ruff check --target-version py310 .  # проверка кода для Python 3.10+
+ruff check --select / --ignore  # выбор правил (например, --select=E501,F401)
+```
+
+</details>
+
+---
+
+<details>
+<summary>🔍 автоматическая проверка Ruff перед коммитом</summary>
+
+[Ruff](https://github.com/astral-sh/ruff) - это молниеносный линтер для Python, также разработанный Astral.
+
+**Установить pre-commit:**
+```bash
+uv pip install pre-commit
+```
+
+**Добавьте конфиг .pre-commit-config.yaml:**
+```bash
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.10  # Актуальная версия Ruff (проверьте на GitHub)
+    hooks:
+      - id: ruff
+        args: [--fix]  # Автоматически исправляет ошибки
+      - id: ruff-format  # Проверка форматирования (если нужно)
+```
+
+**Установите хуки в репозиторий:**
+```bash
+pre-commit install
+```
+Теперь Ruff будет запускаться перед каждым коммитом.
+
+**Проверить работу вручную:**
+```bash
+pre-commit run --all-files
+```
+Теперь Ruff будет запускаться перед каждым коммитом.
+
 </details>
 
 ---
@@ -87,30 +177,6 @@ uvx ruff check .  # Проверит все файлы в текущей дир�
 
 **Сборка и запуск контейнеров:**
 ```bash
-docker-compose up --build  # Соберет и запустит сервисы
-```
-
-## Структура
-
-```python
-
-pythonbooks
-│
-├── .github/workflows
-│   └── ruff.yml
-│
-├── apps
-│   └── books
-│       └──scrapers
-│           ├── piter_publ/
-│           └── base_scraper.py
-│
-├── config
-│
-├── .gitignore
-├── .pre-commit-config.yaml
-├── manage.py
-├── requirements.txt - зависимости
-├── .env
-└── README.md
+docker-compose build --no-cache
+docker-compose up  # Соберет и запустит сервисы
 ```
