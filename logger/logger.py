@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 def setup_logger(module_name: str, log_dir: str = "logs"):
-    log_path = BASE_DIR / log_dir / module_name
+    log_path = BASE_DIR / log_dir
     log_path.mkdir(parents=True, exist_ok=True)
 
     logger.remove()
@@ -22,7 +22,7 @@ def setup_logger(module_name: str, log_dir: str = "logs"):
     )
 
     logger.add(
-        "logs/debug.log",
+        log_path / "debug.log",
         rotation="10 MB",
         format=file_format,
         level="DEBUG",
@@ -30,7 +30,7 @@ def setup_logger(module_name: str, log_dir: str = "logs"):
     )
 
     logger.add(
-        log_path / "logs/errors.log",
+        log_path / "errors.log",
         rotation="10 MB",
         retention="3 months",
         format=file_format,

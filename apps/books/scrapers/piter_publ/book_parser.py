@@ -95,10 +95,18 @@ class BookParser:
                         last_name = full_name
                         first_name = ""
 
+                    description_block = name_tag.parent
+                    bio_parts = []
+                    for bio in description_block.contents:
+                        if bio != name_tag and isinstance(bio, str):
+                            bio_parts.append(bio.strip())
+                    bio = " ".join(bio_parts).strip()
+
                     authors.append(
                         {
                             "first_name": first_name.strip("."),
                             "last_name": last_name,
+                            "bio": bio,
                         }
                     )
 

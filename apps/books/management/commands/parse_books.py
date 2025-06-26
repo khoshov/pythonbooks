@@ -124,11 +124,13 @@ class Command(BaseCommand):
         for author_data in authors_data:
             first_name = author_data.get("first_name", "").strip()
             last_name = author_data.get("last_name", "").strip()
+            bio = author_data.get("bio", "").strip()
             if not first_name and not last_name:
                 continue
             author_obj, _ = Author.objects.get_or_create(
                 first_name=first_name,
                 last_name=last_name,
+                bio=bio,
             )
             authors.append(author_obj)
 
