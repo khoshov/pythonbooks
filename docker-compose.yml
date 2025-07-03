@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   django:
     build: .
@@ -15,14 +17,33 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - pythonbooks-network
 
   postgres:
-    image: postgres
+    image: postgres:15-alpine
+    container_name: pythonbooks-postgres
     ports:
       - "5432:5432"
     env_file:
       - .env
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - pythonbooks-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  pythonbooks-network:
+    driver: bridge
