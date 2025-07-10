@@ -1,5 +1,6 @@
 from django_filters import CharFilter, DateFilter, FilterSet
-from apps.books.models import Book
+
+from ...models import Book
 
 
 class BookFilter(FilterSet):
@@ -32,10 +33,4 @@ class BookFilter(FilterSet):
 
     class Meta:
         model = Book
-        fields = [
-            "title",
-            "author",
-            "publisher",
-            "tag",
-            "language",
-        ]
+        fields = []

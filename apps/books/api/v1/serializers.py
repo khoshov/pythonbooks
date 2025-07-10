@@ -1,11 +1,11 @@
 from rest_framework import serializers
 
-from apps.books.models import (
-    Publisher,
+from ...models import (
     Author,
-    Tag,
     Book,
     Comment,
+    Publisher,
+    Tag,
 )
 
 

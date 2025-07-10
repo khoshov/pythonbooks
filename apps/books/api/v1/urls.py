@@ -1,8 +1,7 @@
+from django.urls import include, path
 from rest_framework import routers
 
-from django.urls import include, path
-
-from apps.books.api.views import (
+from .views import (
     AuthorViewSet,
     BookViewSet,
     CommentViewSet,

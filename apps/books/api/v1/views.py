@@ -1,8 +1,8 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 
-from apps.books.api.filters import BookFilter
-from apps.books.api.serializers import (
+from .filters import BookFilter
+from .serializers import (
     AuthorSerializer,
     BookDetailSerializer,
     BookSerializer,
@@ -10,7 +10,8 @@ from apps.books.api.serializers import (
     PublisherSerializer,
     TagSerializer,
 )
-from apps.books.models import (
+
+from ...models import (
     Author,
     Book,
     Comment,
