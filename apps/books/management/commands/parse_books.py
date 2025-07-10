@@ -1,11 +1,9 @@
 import asyncio
 from asgiref.sync import sync_to_async
-from datetime import datetime
 from django.core.management.base import BaseCommand
 from urllib.parse import urljoin
-from django.db import transaction
 
-from apps.books.models import Book, Author, Publisher
+from apps.books.services.book_saver import BookSaver
 from books.scrapers.piter_publ.book_parser import BookParser
 from books.scrapers.piter_publ.piter_scraper import PiterScraper
 from books.scrapers.base_scraper import BaseScraper
@@ -76,63 +74,4 @@ class Command(BaseCommand):
                 await self.save_book(book)
 
     async def save_book(self, item: dict):
-        await sync_to_async(self._save_book_sync)(item)
-
-    @transaction.atomic
-    def _save_book_sync(self, item: dict):
-        authors_data = item["author"]
-        details = item["details"]
-        isbn = details.get("ISBN", "").strip()
-
-        if not isbn:
-            logger.warning(f"skipped book without ISBN: {item['book_title']}")
-            return
-
-        raw_year = details.get("Год", "2024")
-        try:
-            published_at = datetime.strptime(raw_year, "%Y").date()
-        except ValueError:
-            published_at = datetime.strptime("2024", "%Y").date()
-
-        publisher, _ = Publisher.objects.get_or_create(name="Издательство Питер")
-
-        book = Book.objects.filter(isbn_code=isbn).first()
-        if book:
-            logger.info(f"updating book: {book.title} ({isbn})")
-            book.title = item["book_title"]
-            book.description = item["description"]
-            book.published_at = published_at
-            book.total_pages = int(details.get("Страниц", 0))
-            book.cover_image = item["cover"].get("cover_image", "")
-            book.language = "Русский"
-            book.publisher = publisher
-            book.save()
-        else:
-            logger.info(f"creating new book: {item['book_title']} ({isbn})")
-            book = Book.objects.create(
-                isbn_code=isbn,
-                title=item["book_title"],
-                description=item["description"],
-                published_at=published_at,
-                total_pages=int(details.get("Страниц", 0)),
-                cover_image=item["cover"].get("cover_image", ""),
-                language="Русский",
-                publisher=publisher,
-            )
-
-        authors = []
-        for author_data in authors_data:
-            first_name = author_data.get("first_name", "").strip()
-            last_name = author_data.get("last_name", "").strip()
-            bio = author_data.get("bio", "").strip()
-            if not first_name and not last_name:
-                continue
-            author_obj, _ = Author.objects.get_or_create(
-                first_name=first_name,
-                last_name=last_name,
-                bio=bio,
-            )
-            authors.append(author_obj)
-
-        book.author.set(authors)
-        logger.debug(f"saved book with authors: {item['book_title']}")
+        await sync_to_async(BookSaver().save_book)(item)

@@ -85,15 +85,17 @@ class BookParser:
                     parts = full_name.split()
                     if len(parts) == 2:
                         last_name, first_name = parts
-                    elif len(parts) == 3:
+                    elif len(parts) > 2:
                         last_name = " ".join(parts[:-1])
                         first_name = parts[-1]
-                    else:
-                        logger.warning(
-                            f"unusual author name format in tab-2: {full_name}"
-                        )
-                        last_name = full_name
+                    elif len(parts) == 1:
+                        last_name = parts[0]
                         first_name = ""
+                        logger.warning(f"single-word author name: {full_name}")
+                    else:
+                        last_name = ""
+                        first_name = ""
+                        logger.warning(f"empty author name: {full_name}")
 
                     description_block = name_tag.parent
                     bio_parts = []

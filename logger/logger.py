@@ -12,7 +12,7 @@ def setup_logger(module_name: str, log_dir: str = "logs"):
 
     logger.remove()
 
-    file_format = "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}"
+    file_format = "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{line} | {message}"
 
     console_format = (
         "<green>{time:HH:mm:ss}</green> | "
