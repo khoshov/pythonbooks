@@ -3,22 +3,22 @@ import asyncio
 from ..base_scraper import BaseScraper
 from .paginator import Paginator
 from .link_extractor import LinkExtractor
-from logger.logger import setup_logger
+from logger.books.log import get_logger
 
-logger = setup_logger(module_name=__name__, log_dir="logs/scrapers")
+logger = get_logger(__name__)
 BASE_DOMAIN = "https://www.piter.com"
+BASE_URL = "https://www.piter.com/collection/all?q=python"
 
 
 class PiterScraper(BaseScraper):
-    BASE_URL = "https://www.piter.com/collection/all?q=python"
-
-    def __init__(self, delay=1.0):
+    def __init__(self, base_url=None, delay=1.0, paginator=None, link_extractor=None):
         super().__init__(delay)
-        self.paginator = Paginator(BASE_DOMAIN)
-        self.link_extractor = LinkExtractor(BASE_DOMAIN)
+        self.base_url = base_url or BASE_URL
+        self.paginator = paginator or Paginator(BASE_DOMAIN)
+        self.link_extractor = link_extractor or LinkExtractor(BASE_DOMAIN)
 
-    async def scrape_book_links(self, url):
-        current_url = url
+    async def scrape_book_links(self, url=None):
+        current_url = url or self.base_url
         page_number = 1
 
         while current_url:

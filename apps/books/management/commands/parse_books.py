@@ -3,13 +3,19 @@ from asgiref.sync import sync_to_async
 from django.core.management.base import BaseCommand
 from urllib.parse import urljoin
 
+from apps.books.models import Book, Author, Publisher
 from apps.books.services.book_saver import BookSaver
-from books.scrapers.piter_publ.book_parser import BookParser
-from books.scrapers.piter_publ.piter_scraper import PiterScraper
-from books.scrapers.base_scraper import BaseScraper
-from logger.logger import setup_logger
+from apps.books.scrapers.piter_publ.book_parser import BookParser
+from apps.books.scrapers.piter_publ.piter_scraper import PiterScraper
+from apps.books.scrapers.base_scraper import BaseScraper
+from apps.books.services.author_service import AuthorService
+from apps.books.services.publisher_service import PublisherService
+from logger.books.log import get_logger
 
-logger = setup_logger(module_name=__name__, log_dir="logs/scrapers")
+logger = get_logger(__name__)
+author_service = AuthorService(Author)
+publisher_service = PublisherService(Publisher)
+book_saver = BookSaver(Book, publisher_service, author_service, logger)
 
 
 class AsyncBookFetcher(BaseScraper):
@@ -63,7 +69,7 @@ class Command(BaseCommand):
         book_scraper = AsyncBookFetcher(base_domain="https://www.piter.com")
 
         tasks = []
-        async for link in piter.scrape_book_links(PiterScraper.BASE_URL):
+        async for link in piter.scrape_book_links():
             logger.debug(f"found book link: {link}")
             task = asyncio.create_task(book_scraper.scrape_book(link))
             tasks.append(task)
@@ -74,4 +80,4 @@ class Command(BaseCommand):
                 await self.save_book(book)
 
     async def save_book(self, item: dict):
-        await sync_to_async(BookSaver().save_book)(item)
+        await sync_to_async(book_saver.save_book)(item)

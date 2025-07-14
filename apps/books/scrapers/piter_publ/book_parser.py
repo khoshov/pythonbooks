@@ -2,9 +2,9 @@ from bs4 import BeautifulSoup
 from typing import List, Dict
 from urllib.parse import urljoin
 
-from logger.logger import setup_logger
+from logger.books.log import get_logger
 
-logger = setup_logger(module_name=__name__, log_dir="logs/scrapers")
+logger = get_logger(__name__)
 
 
 class BookParser:
@@ -83,15 +83,14 @@ class BookParser:
                 if name_tag:
                     full_name = name_tag.get_text(strip=True)
                     parts = full_name.split()
-                    if len(parts) == 2:
-                        last_name, first_name = parts
-                    elif len(parts) > 2:
-                        last_name = " ".join(parts[:-1])
-                        first_name = parts[-1]
-                    elif len(parts) == 1:
+                    if len(parts) == 1:
                         last_name = parts[0]
                         first_name = ""
-                        logger.warning(f"single-word author name: {full_name}")
+                    elif len(parts) == 2:
+                        last_name, first_name = parts
+                    elif len(parts) >= 3:
+                        first_name = parts[1]
+                        last_name = " ".join([parts[0]] + parts[2:])
                     else:
                         last_name = ""
                         first_name = ""

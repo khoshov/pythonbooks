@@ -2,9 +2,9 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from typing import List
 
-from logger.logger import setup_logger
+from logger.books.log import get_logger
 
-logger = setup_logger(module_name=__name__, log_dir="logs/scrapers")
+logger = get_logger(__name__)
 
 
 class LinkExtractor:
