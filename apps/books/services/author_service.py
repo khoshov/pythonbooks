@@ -1,7 +1,7 @@
 from typing import List
 
-from apps.books.models import Author
-from apps.books.validators.validators import AuthorInput
+from ..models import Author
+from ..validators.validators import AuthorInput
 
 
 class AuthorService:

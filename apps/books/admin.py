@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.books.models import Author, Book, Comment, Publisher, Tag
+from .models import Author, Book, Comment, Publisher, Tag
 
 
 @admin.register(Author)

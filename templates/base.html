@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Python Books{% endblock %}</title>
+    
+    <!-- Tailwind CSS with DaisyUI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-base-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="navbar bg-base-100 shadow-sm border-b border-base-300">
+        <div class="navbar-start">
+            <a href="/" class="btn btn-ghost normal-case text-xl">
+                <i class="fas fa-book text-primary"></i>
+                Python Books
+            </a>
+        </div>
+        
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="/" class="btn btn-ghost">Home</a></li>
+                <li>
+                    <details>
+                        <summary class="btn btn-ghost">Categories</summary>
+                        <ul class="p-2 bg-base-100 rounded-t-none">
+                            <li><a href="#" hx-get="/books/?category=beginner" hx-target="#books-container" hx-push-url="true">Beginner</a></li>
+                            <li><a href="#" hx-get="/books/?category=intermediate" hx-target="#books-container" hx-push-url="true">Intermediate</a></li>
+                            <li><a href="#" hx-get="/books/?category=advanced" hx-target="#books-container" hx-push-url="true">Advanced</a></li>
+                        </ul>
+                    </details>
+                </li>
+                <li><a href="#" class="btn btn-ghost">Free Books</a></li>
+            </ul>
+        </div>
+        
+        <div class="navbar-end">
+            <div class="form-control">
+                <input type="text" 
+                       placeholder="Search books..." 
+                       class="input input-bordered w-24 md:w-auto"
+                       name="search"
+                       hx-get="/books/search/"
+                       hx-trigger="input changed delay:300ms"
+                       hx-target="#books-container"
+                       hx-push-url="true">
+            </div>
+            <div class="dropdown dropdown-end ml-2">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a onclick="document.documentElement.setAttribute('data-theme', 'light')">Light</a></li>
+                    <li><a onclick="document.documentElement.setAttribute('data-theme', 'dark')">Dark</a></li>
+                    <li><a onclick="document.documentElement.setAttribute('data-theme', 'cupcake')">Cupcake</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded">
+        <div class="grid grid-flow-col gap-4">
+            <a href="#" class="link link-hover">About</a>
+            <a href="#" class="link link-hover">Contact</a>
+            <a href="#" class="link link-hover">Submit a Book</a>
+        </div>
+        <div class="grid grid-flow-col gap-4">
+            <a href="#" class="text-xl"><i class="fab fa-github"></i></a>
+            <a href="#" class="text-xl"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-xl"><i class="fab fa-python"></i></a>
+        </div>
+        <div>
+            <p>&copy; 2024 Python Books. All rights reserved.</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

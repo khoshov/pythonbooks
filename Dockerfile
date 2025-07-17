@@ -4,17 +4,11 @@ FROM python:3.13-slim-bookworm
 # Install UV (ultra-fast Python package installer) from Astral.sh
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Create non-root user for security
-RUN groupadd -r appuser && useradd -r -g appuser appuser
-
 # Ensure Python output is sent straight to terminal without buffering
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    UV_SYSTEM_PYTHON=1
+    PYTHONDONTWRITEBYTECODE=1
 
-# ======================
-# SYSTEM DEPENDENCIES
-# ======================
+# Install system dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
@@ -27,34 +21,17 @@ RUN apt-get update && \
 # Set working directory inside container
 WORKDIR /app
 
-# ======================
-# DEPENDENCY INSTALLATION
-# ======================
-# Copy dependency files with proper ownership
-COPY --chown=appuser:appuser pyproject.toml uv.lock ./
+# Copy dependency files
+COPY pyproject.toml uv.lock ./
 
 # Install Python dependencies using UV
-RUN uv sync --locked --no-dev
-
-# ======================
-# APPLICATION CODE
-# ======================
-# Copy entrypoint script first
-COPY --chown=appuser:appuser entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+RUN uv sync --dev --locked
 
 # Copy the rest of the application code
-COPY --chown=appuser:appuser . .
+COPY . .
 
-# Create directories for Django with proper permissions
-RUN mkdir -p /app/static /app/media && \
-    chown -R appuser:appuser /app
-
-# ======================
-# RUNTIME CONFIGURATION
-# ======================
-# Switch to non-root user
-USER appuser
+# Making the file executable
+RUN chmod +x entrypoint.sh
 
 # Expose the port Django runs on
 EXPOSE 8000

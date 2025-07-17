@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 
 import environ
@@ -11,6 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Take environment variables from .env.example file
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+
+# Allows to keep applications in apps directory
+sys.path.insert(0, os.path.join(BASE_DIR, "apps"))
 
 # ========================
 # SECURITY CONFIGURATION
@@ -25,16 +29,20 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 # Application definition
 
 INSTALLED_APPS = [
+    # Django apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "apps.books.apps.BooksConfig",
+    # Third party apps
+    "django_celery_beat",
     "django_extensions",
-    "rest_framework",
     "django_filters",
+    "rest_framework",
+    # Project apps
+    "books",
 ]
 
 MIDDLEWARE = [
@@ -52,7 +60,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -72,10 +80,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # =============
 # Uses django-environ to automatically parse DB_* variables or DATABASE_URL
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": env.db(),
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -114,14 +119,16 @@ LOCALE_PATHS = [
 # STATIC FILES
 # =============
 STATIC_URL = "static/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 # Note: STATIC_ROOT should be set when collecting static files for production
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # ====================
 # DEFAULT PRIMARY KEY
 # ====================
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 
 # ====================
 # DJANGO REST FRAMEWORK
@@ -139,8 +146,8 @@ REST_FRAMEWORK = {
 # ====================
 # CELERY SETTINGS
 # ====================
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_BROKER_URL = "redis://redis:6379/0"  #TODO: Забирать из переменных окружения
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 CELERY_BEAT_SCHEDULE = {
     "parse-books-every-night": {
         "task": "apps.books.tasks.parse_books_task",

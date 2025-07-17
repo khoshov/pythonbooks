@@ -1,0 +1,93 @@
+{% if books %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    {% for book in books %}
+    <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+        <figure class="px-4 pt-4">
+            <img src="{{ book.cover_image }}" 
+                 alt="{{ book.title }}" 
+                 class="rounded-lg h-48 w-full object-cover">
+        </figure>
+        <div class="card-body">
+            <h2 class="card-title text-sm">{{ book.title }}</h2>
+            <p class="text-xs text-base-content/70">
+                by {% for author in book.author.all %}{{ author.first_name }} {{ author.last_name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+            </p>
+            <p class="text-xs text-base-content/60">{{ book.publisher.name }}</p>
+            <div class="flex flex-wrap gap-1 mt-2">
+                {% for tag in book.tags.all %}
+                <span class="badge badge-outline badge-sm" style="color: {{ tag.color }}">{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+            <div class="card-actions justify-end mt-4">
+                <button class="btn btn-primary btn-sm" 
+                        hx-get="/books/{{ book.id }}/"
+                        hx-target="#modal-content"
+                        hx-swap="innerHTML"
+                        onclick="book_modal.showModal()">
+                    View Details
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if books.has_other_pages %}
+<div class="flex justify-center mt-8">
+    <div class="join">
+        {% if books.has_previous %}
+        <button class="join-item btn"
+                hx-get="?page={{ books.previous_page_number }}"
+                hx-target="#books-container"
+                hx-push-url="true">
+            «
+        </button>
+        {% endif %}
+        
+        {% for num in books.paginator.page_range %}
+        {% if num == books.number %}
+        <button class="join-item btn btn-active">{{ num }}</button>
+        {% else %}
+        <button class="join-item btn"
+                hx-get="?page={{ num }}"
+                hx-target="#books-container"
+                hx-push-url="true">
+            {{ num }}
+        </button>
+        {% endif %}
+        {% endfor %}
+        
+        {% if books.has_next %}
+        <button class="join-item btn"
+                hx-get="?page={{ books.next_page_number }}"
+                hx-target="#books-container"
+                hx-push-url="true">
+            »
+        </button>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Book Detail Modal -->
+<dialog id="book_modal" class="modal">
+    <div class="modal-box w-11/12 max-w-5xl">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <div id="modal-content">
+            <!-- Book details will be loaded here -->
+        </div>
+    </div>
+</dialog>
+
+{% else %}
+<div class="text-center py-12">
+    <div class="text-6xl text-base-content/20 mb-4">
+        <i class="fas fa-book"></i>
+    </div>
+    <h3 class="text-2xl font-bold mb-2">No books found</h3>
+    <p class="text-base-content/70">Try adjusting your search or filter criteria.</p>
+</div>
+{% endif %}

@@ -1,4 +1,4 @@
-from apps.books.models import Publisher
+from ..models import Publisher
 
 
 class PublisherService:
