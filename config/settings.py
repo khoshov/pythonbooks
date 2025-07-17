@@ -146,7 +146,7 @@ REST_FRAMEWORK = {
 # ====================
 # CELERY SETTINGS
 # ====================
-CELERY_BROKER_URL = "redis://redis:6379/0"  #TODO: Забирать из переменных окружения
+CELERY_BROKER_URL = "redis://redis:6379/0"  # TODO: Забирать из переменных окружения
 CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 CELERY_BEAT_SCHEDULE = {
     "parse-books-every-night": {
