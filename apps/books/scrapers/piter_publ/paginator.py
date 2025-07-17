@@ -1,6 +1,7 @@
 import re
-from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+
+from bs4 import BeautifulSoup
 
 from logger.books.log import get_logger
 

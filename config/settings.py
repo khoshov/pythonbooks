@@ -1,9 +1,8 @@
 import os
-
 from pathlib import Path
-from celery.schedules import crontab
 
 import environ
+from celery.schedules import crontab
 
 # Initialize environment variables
 env = environ.Env()
@@ -135,6 +134,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ],
+}
 
 # ====================
 # CELERY SETTINGS

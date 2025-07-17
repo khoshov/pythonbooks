@@ -1,14 +1,15 @@
 import asyncio
-from asgiref.sync import sync_to_async
-from django.core.management.base import BaseCommand
 from urllib.parse import urljoin
 
-from apps.books.models import Book, Author, Publisher
-from apps.books.services.book_saver import BookSaver
+from asgiref.sync import sync_to_async
+from django.core.management.base import BaseCommand
+
+from apps.books.models import Author, Book, Publisher
+from apps.books.scrapers.base_scraper import BaseScraper
 from apps.books.scrapers.piter_publ.book_parser import BookParser
 from apps.books.scrapers.piter_publ.piter_scraper import PiterScraper
-from apps.books.scrapers.base_scraper import BaseScraper
 from apps.books.services.author_service import AuthorService
+from apps.books.services.book_saver import BookSaver
 from apps.books.services.publisher_service import PublisherService
 from logger.books.log import get_logger
 
