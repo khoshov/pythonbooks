@@ -1,16 +1,15 @@
 import os
-
 from pathlib import Path
-from celery.schedules import crontab
 
 import environ
+from celery.schedules import crontab
 
 # Initialize environment variables
 env = environ.Env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Take environment variables from .env file
+# Take environment variables from .env.example file
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # ========================
@@ -34,6 +33,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "apps.books.apps.BooksConfig",
     "django_extensions",
+    "rest_framework",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -120,6 +121,20 @@ STATIC_URL = "static/"
 # DEFAULT PRIMARY KEY
 # ====================
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# ====================
+# DJANGO REST FRAMEWORK
+# ====================
+REST_FRAMEWORK = {
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 20,
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+}
 
 # ====================
 # CELERY SETTINGS

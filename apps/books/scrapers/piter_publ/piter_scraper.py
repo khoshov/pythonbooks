@@ -1,9 +1,10 @@
 import asyncio
 
-from ..base_scraper import BaseScraper
-from .paginator import Paginator
-from .link_extractor import LinkExtractor
 from logger.books.log import get_logger
+
+from ..base_scraper import BaseScraper
+from .link_extractor import LinkExtractor
+from .paginator import Paginator
 
 logger = get_logger(__name__)
 BASE_DOMAIN = "https://www.piter.com"
