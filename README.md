@@ -253,6 +253,32 @@ docker-compose logs django  # Только Django
 - [Docker Documentation](https://docs.docker.com/)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 
+
+**Сборка и запуск контейнеров:**
+```bash
+docker-compose build --no-cache
+docker-compose up  # Соберет и запустит сервисы
+```
+
+## Запуск задачи в Celery:
+
+**Команда для запуска задачи:**
+сначала redis:
+```bash
+docker run -d -p 6379:6379 --name redis redis:alpine
+```
+
+потом celery:
+```bash
+celery -A config beat -l info
+```
+
+```markdown
+-A config - указывает где находится Celery-приложение
+beat - запускает Celery Beat — компонент, который периодически отправляет задачи в очередь
+-l info - уровень логирования (DEBUG, INFO, WARNING, ERROR)
+```
+
 ## 📄 Лицензия
 
 Этот проект лицензирован под MIT License - см. файл [LICENSE](LICENSE) для деталей.
@@ -267,3 +293,4 @@ docker-compose logs django  # Только Django
 ---
 
 **Разработано с ❤️ используя современные инструменты Python**
+

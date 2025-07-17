@@ -1,6 +1,7 @@
 import os
 
 from pathlib import Path
+from celery.schedules import crontab
 
 import environ
 
@@ -99,7 +100,7 @@ LANGUAGES = [
     ("en", "English"),
     ("ru", "Russian"),
 ]
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -119,3 +120,15 @@ STATIC_URL = "static/"
 # DEFAULT PRIMARY KEY
 # ====================
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# ====================
+# CELERY SETTINGS
+# ====================
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_BEAT_SCHEDULE = {
+    "parse-books-every-night": {
+        "task": "apps.books.tasks.parse_books_task",
+        "schedule": crontab(hour=1, minute=11),
+    }
+}
