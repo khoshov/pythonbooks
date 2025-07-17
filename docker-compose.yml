@@ -26,3 +26,38 @@ services:
       - ./pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  celery:
+    build: .
+    container_name: celery_worker
+    command: celery -A config worker --loglevel=info
+    volumes:
+      - ./apps:/app/apps
+      - ./config:/app/config
+      - ./manage.py:/app/manage.py
+      - /app/.venv
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - django
+
+  celery-beat:
+    build: .
+    container_name: celery_beat
+    command: celery -A config beat --loglevel=info
+    volumes:
+      - ./apps:/app/apps
+      - ./config:/app/config
+      - ./manage.py:/app/manage.py
+      - /app/.venv
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - django

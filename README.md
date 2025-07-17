@@ -180,3 +180,22 @@ pre-commit run --all-files
 docker-compose build --no-cache
 docker-compose up  # Соберет и запустит сервисы
 ```
+
+## Запуск задачи в Celery:
+
+**Команда для запуска задачи:**
+сначала redis:
+```bash
+docker run -d -p 6379:6379 --name redis redis:alpine
+```
+
+потом celery:
+```bash
+celery -A config beat -l info
+```
+
+```markdown
+-A config - указывает где находится Celery-приложение
+beat - запускает Celery Beat — компонент, который периодически отправляет задачи в очередь
+-l info - уровень логирования (DEBUG, INFO, WARNING, ERROR)
+```
