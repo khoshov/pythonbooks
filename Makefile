@@ -1,9 +1,8 @@
 # ======================
 # VARIABLES
 # ======================
-USERID := $(shell id -u)
-GROUPID := $(shell id -g)
-PYTHON := docker compose run -u $(USERID):$(GROUPID) --rm django uv run
+UV := docker compose run -u $(USERID):$(GROUPID) --rm django uv
+PYTHON := $(UV) run
 DOCKER_COMPOSE := docker compose
 RUFF := uvx ruff
 
@@ -23,7 +22,7 @@ build: ## Build Docker images
 	$(DOCKER_COMPOSE) build
 
 up: ## Start all services
-	$(DOCKER_COMPOSE) up -d
+	$(DOCKER_COMPOSE) up
 
 down: ## Stop all services
 	$(DOCKER_COMPOSE) down
@@ -79,8 +78,15 @@ check: ## Run all code quality checks
 	$(RUFF) check apps config
 	$(RUFF) format --check apps config
 
-test: ## Run tests
-	$(PYTHON) manage.py test
+# ======================
+# TESTS
+# ======================
+test: ## Run pytest tests with coverage in Docker
+	$(PYTHON) pytest
+
+coverage: ## Generate coverage report
+	$(PYTHON) pytest --cov=apps --cov-report=html --cov-report=term-missing
+	@echo "Coverage report generated in htmlcov/index.html"
 
 # ======================
 # DEVELOPMENT
@@ -127,3 +133,6 @@ health: ## Check services health
 	$(DOCKER_COMPOSE) ps
 	@echo "\n--- Service Health ---"
 	@curl -f http://localhost:8000/health/ || echo "Django service not responding"
+
+parse:
+	$(PYTHON) manage.py parse_books

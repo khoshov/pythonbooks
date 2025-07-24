@@ -3,11 +3,12 @@ from datetime import datetime
 from django.db import transaction
 from pydantic import ValidationError
 
-from apps.books.models import Author, Book, Publisher
-from apps.books.services.author_service import AuthorService
-from apps.books.services.publisher_service import PublisherService
-from apps.books.validators.validators import BookInput
 from logger.books.log import get_logger
+
+from ..models import Author, Book, Publisher
+from ..validators.validators import BookInput
+from .author_service import AuthorService
+from .publisher_service import PublisherService
 
 logger = get_logger(__name__)
 author_service = AuthorService(Author)

@@ -3,12 +3,12 @@ import asyncio
 from asgiref.sync import sync_to_async
 from celery import shared_task
 
-from apps.books.management.commands.parse_books import (
+from .management.commands.parse_books import (
     AsyncBookFetcher,
     book_saver,
     logger,
 )
-from apps.books.scrapers.piter_publ.piter_scraper import PiterScraper
+from .scrapers.piter_publ.piter_scraper import PiterScraper
 
 
 @shared_task

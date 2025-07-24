@@ -1,79 +1,127 @@
-version: '3.8'
-
 services:
   django:
     build: .
-    container_name: pythonbooks
+    container_name: pythonbooks-django
     ports:
       - "8000:8000"
     env_file:
       - .env
-    command: uv run manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "uv run manage.py migrate &&
+             uv run manage.py collectstatic --noinput &&
+             uv run manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./apps:/app/apps
       - ./config:/app/config
+      - ./templates:/app/templates
+      - ./static:/app/static
       - ./manage.py:/app/manage.py
-      - /app/.venv
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     restart: unless-stopped
     networks:
       - pythonbooks-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/admin/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   postgres:
     image: postgres:15-alpine
     container_name: pythonbooks-postgres
     ports:
       - "5432:5432"
-    env_file:
-      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-pythonbooks}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-pythonbooks}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
       start_period: 10s
     restart: unless-stopped
     networks:
       - pythonbooks-network
+
   redis:
-    image: redis:alpine
+    image: redis:7-alpine
+    container_name: pythonbooks-redis
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - pythonbooks-network
+
   celery:
     build: .
-    container_name: celery_worker
-    command: celery -A config worker --loglevel=info
+    container_name: pythonbooks-celery
+    command: celery -A config worker --loglevel=info --concurrency=2
     volumes:
       - ./apps:/app/apps
       - ./config:/app/config
+      - ./templates:/app/templates
+      - ./static:/app/static
       - ./manage.py:/app/manage.py
-      - /app/.venv
     env_file:
       - .env
     depends_on:
-      - redis
-      - django
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - pythonbooks-network
+    healthcheck:
+      test: ["CMD", "celery", "-A", "config", "inspect", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
   celery-beat:
     build: .
-    container_name: celery_beat
-    command: celery -A config beat --loglevel=info
+    container_name: pythonbooks-celery-beat
+    command: celery -A config beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - ./apps:/app/apps
       - ./config:/app/config
+      - ./templates:/app/templates
+      - ./static:/app/static
       - ./manage.py:/app/manage.py
-      - /app/.venv
     env_file:
       - .env
     depends_on:
-      - redis
-      - django
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - pythonbooks-network
 
 volumes:
   postgres_data:
+    driver: local
+  redis_data:
     driver: local
 
 networks:
