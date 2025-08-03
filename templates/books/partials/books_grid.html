@@ -3,9 +3,11 @@
     {% for book in books %}
     <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
         <figure class="px-4 pt-4">
-            <img src="{{ book.cover_image }}" 
-                 alt="{{ book.title }}" 
-                 class="rounded-lg h-48 w-full object-cover">
+            <div class="relative w-full" style="padding-bottom: 140.7%;">
+                <img src="{{ book.cover_image }}" 
+                     alt="{{ book.title }}" 
+                     class="absolute inset-0 w-full h-full object-contain rounded-lg">
+            </div>
         </figure>
         <div class="card-body">
             <h2 class="card-title text-sm">{{ book.title }}</h2>
