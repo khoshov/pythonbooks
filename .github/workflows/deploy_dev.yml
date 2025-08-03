@@ -1,0 +1,31 @@
+name: Deploy to Dev. server
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.DEV_SERVER_HOST }}
+        username: ${{ secrets.DEV_SSH_USERNAME }}
+        key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+        script: |
+          cd ${{ secrets.DEV_PROJECT_PATH }}
+          git pull origin develop
+            
+          uv sync --no-dev
+          uv run manage.py migrate
+          
+          sudo systemctl restart gunicorn
+          
+          echo "Deployment successful!"
