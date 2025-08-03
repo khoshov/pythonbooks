@@ -39,6 +39,27 @@ class BookSerializer(serializers.ModelSerializer):
             "author",
             "publisher",
             "published_at",
+            "total_pages",
+        ]
+
+
+class BookCreateUpdateSerializer(serializers.ModelSerializer):
+    """Сериализатор для создания/обновления книги"""
+
+    author = serializers.PrimaryKeyRelatedField(
+        queryset=Author.objects.all(), many=True, required=False
+    )
+    publisher = serializers.PrimaryKeyRelatedField(queryset=Publisher.objects.all())
+
+    class Meta:
+        model = Book
+        fields = [
+            "id",
+            "title",
+            "author",
+            "publisher",
+            "published_at",
+            "total_pages",
         ]
 
 
@@ -64,8 +85,20 @@ class BookDetailSerializer(BookSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
+    book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
 
     class Meta:
         model = Comment
-        fields = ["id", "text", "user", "created", "modified"]
-        read_only_fields = ["user", "created", "modified"]
+        fields = [
+            "id",
+            "text",
+            "user",
+            "book",
+            "created",
+            "modified",
+        ]
+        read_only_fields = [
+            "user",
+            "created",
+            "modified",
+        ]

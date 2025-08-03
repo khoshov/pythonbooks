@@ -1,6 +1,6 @@
 
 [![Ruff](https://github.com/khoshov/pythonbooks/actions/workflows/ruff.yml/badge.svg)](https://github.com/khoshov/pythonbooks/actions/workflows/ruff.yml)
-
+![API Coverage](https://img.shields.io/badge/API%20Coverage-100%25-brightgreen)
 ## Структура
 
 <details>

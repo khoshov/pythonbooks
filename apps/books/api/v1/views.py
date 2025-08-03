@@ -1,22 +1,22 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 
-from .filters import BookFilter
-from .serializers import (
-    AuthorSerializer,
-    BookDetailSerializer,
-    BookSerializer,
-    CommentSerializer,
-    PublisherSerializer,
-    TagSerializer,
-)
-
 from ...models import (
     Author,
     Book,
     Comment,
     Publisher,
     Tag,
+)
+from .filters import BookFilter
+from .serializers import (
+    AuthorSerializer,
+    BookCreateUpdateSerializer,
+    BookDetailSerializer,
+    BookSerializer,
+    CommentSerializer,
+    PublisherSerializer,
+    TagSerializer,
 )
 
 
@@ -37,7 +37,8 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.select_related("publisher").prefetch_related(
-        "author__books", "tags"
+        "author__books",
+        "tags",
     )
     filter_backends = [DjangoFilterBackend]
     filterset_class = BookFilter
@@ -45,11 +46,20 @@ class BookViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "retrieve":
             return BookDetailSerializer
+        elif self.action in [
+            "create",
+            "update",
+            "partial_update",
+        ]:
+            return BookCreateUpdateSerializer
         return BookSerializer
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.select_related("user", "book")
+    queryset = Comment.objects.select_related(
+        "user",
+        "book",
+    )
     serializer_class = CommentSerializer
 
     def perform_create(self, serializer):
