@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}Python Books - Find the best Python programming books{% endblock %}
+{% block title %}Книги по Python - Найдите лучшие книги по программированию на Python{% endblock %}
 
 {% block content %}
 <div class="hero bg-gradient-to-r from-primary to-secondary text-primary-content rounded-lg mb-8">
     <div class="hero-content text-center">
         <div class="max-w-md">
-            <h1 class="mb-5 text-5xl font-bold">Python Books</h1>
-            <p class="mb-5">Discover the best Python programming books for every skill level. From beginners to experts, find your next great read.</p>
+            <h1 class="mb-5 text-5xl font-bold">Книги по Python</h1>
+            <p class="mb-5">Откройте для себя лучшие книги по программированию на Python для любого уровня навыков. От новичков до экспертов - найдите свою следующую отличную книгу.</p>
             <button class="btn btn-accent" onclick="document.getElementById('search-input').focus()">
-                Start Exploring
+Начать исследование
             </button>
         </div>
     </div>
@@ -18,15 +18,15 @@
 <!-- Filters -->
 <div class="card bg-base-100 shadow-xl mb-8">
     <div class="card-body">
-        <h2 class="card-title mb-4">Filter Books</h2>
+        <h2 class="card-title mb-4">Фильтр книг</h2>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Search</span>
+                    <span class="label-text">Поиск</span>
                 </label>
                 <input type="text" 
                        id="search-input"
-                       placeholder="Search books, authors..." 
+                       placeholder="Поиск книг, авторов..." 
                        class="input input-bordered"
                        name="search"
                        hx-get="/books/search/"
@@ -37,7 +37,7 @@
             
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Category</span>
+                    <span class="label-text">Категория</span>
                 </label>
                 <select class="select select-bordered" 
                         name="category"
@@ -45,19 +45,19 @@
                         hx-trigger="change"
                         hx-target="#books-container"
                         hx-push-url="true">
-                    <option value="">All Categories</option>
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
-                    <option value="web">Web Development</option>
-                    <option value="data">Data Science</option>
-                    <option value="ml">Machine Learning</option>
+                    <option value="">Все категории</option>
+                    <option value="beginner">Начальный</option>
+                    <option value="intermediate">Средний</option>
+                    <option value="advanced">Продвинутый</option>
+                    <option value="web">Веб-разработка</option>
+                    <option value="data">Наука о данных</option>
+                    <option value="ml">Машинное обучение</option>
                 </select>
             </div>
             
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Publisher</span>
+                    <span class="label-text">Издатель</span>
                 </label>
                 <select class="select select-bordered" 
                         name="publisher"
@@ -65,7 +65,7 @@
                         hx-trigger="change"
                         hx-target="#books-container"
                         hx-push-url="true">
-                    <option value="">All Publishers</option>
+                    <option value="">Все издатели</option>
                     {% for publisher in publishers %}
                     <option value="{{ publisher.id }}">{{ publisher.name }}</option>
                     {% endfor %}
@@ -74,7 +74,7 @@
             
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Sort By</span>
+                    <span class="label-text">Сортировать по</span>
                 </label>
                 <select class="select select-bordered" 
                         name="sort"
@@ -82,11 +82,11 @@
                         hx-trigger="change"
                         hx-target="#books-container"
                         hx-push-url="true">
-                    <option value="-created">Newest</option>
-                    <option value="title">Title A-Z</option>
-                    <option value="-title">Title Z-A</option>
-                    <option value="published_at">Oldest</option>
-                    <option value="-published_at">Latest Published</option>
+                    <option value="-created">Новейшие</option>
+                    <option value="title">Название от А до Я</option>
+                    <option value="-title">Название от Я до А</option>
+                    <option value="published_at">Старейшие</option>
+                    <option value="-published_at">Последние опубликованные</option>
                 </select>
             </div>
         </div>
