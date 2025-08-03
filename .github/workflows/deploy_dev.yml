@@ -26,6 +26,6 @@ jobs:
           uv sync --no-dev
           uv run manage.py migrate
           
-          sudo systemctl restart gunicorn
+          sudo systemctl restart pythonbooks
           
           echo "Deployment successful!"
