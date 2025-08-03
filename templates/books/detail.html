@@ -25,7 +25,7 @@
             </span>
             <span class="badge badge-outline">
                 <i class="fas fa-file-alt mr-1"></i>
-                {{ book.total_pages }} pages
+                {{ book.total_pages }} стр.
             </span>
             <span class="badge badge-outline">
                 <i class="fas fa-barcode mr-1"></i>
@@ -42,7 +42,7 @@
         
         <!-- Description -->
         <div class="prose max-w-none">
-            <h3>Description</h3>
+            <h3>Описание</h3>
             <p>{{ book.description }}</p>
         </div>
         
@@ -50,11 +50,11 @@
         <div class="mt-6 flex gap-2">
             <a href="#" class="btn btn-primary">
                 <i class="fas fa-external-link-alt mr-2"></i>
-                View on {{ book.publisher.name }}
+Посмотреть на {{ book.publisher.name }}
             </a>
             <button class="btn btn-secondary">
                 <i class="fas fa-heart mr-2"></i>
-                Add to Wishlist
+Добавить в желанное
             </button>
         </div>
     </div>
@@ -63,7 +63,7 @@
 <!-- Comments Section -->
 <div class="divider my-8"></div>
 <div class="mt-8">
-    <h3 class="text-2xl font-bold mb-4">Comments</h3>
+    <h3 class="text-2xl font-bold mb-4">Комментарии</h3>
     
     <!-- Add Comment Form -->
     <div class="card bg-base-100 shadow-xl mb-6">
@@ -73,17 +73,17 @@
                   hx-swap="afterbegin">
                 <div class="form-control">
                     <label class="label">
-                        <span class="label-text">Add a comment</span>
+                        <span class="label-text">Добавить комментарий</span>
                     </label>
                     <textarea class="textarea textarea-bordered" 
                               name="text" 
-                              placeholder="Share your thoughts about this book..."
+                              placeholder="Поделитесь своими мыслями о этой книге..."
                               required></textarea>
                 </div>
                 <div class="form-control mt-6">
                     <button class="btn btn-primary">
                         <i class="fas fa-comment mr-2"></i>
-                        Post Comment
+Опубликовать комментарий
                     </button>
                 </div>
             </form>
@@ -107,7 +107,7 @@
         {% empty %}
         <div class="text-center py-8 text-base-content/60">
             <i class="fas fa-comment-slash text-4xl mb-2"></i>
-            <p>No comments yet. Be the first to share your thoughts!</p>
+            <p>Комментариев пока нет. Станьте первым, кто поделится своими мыслями!</p>
         </div>
         {% endfor %}
     </div>
