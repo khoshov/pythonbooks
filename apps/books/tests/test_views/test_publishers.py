@@ -6,10 +6,10 @@ from apps.books.models import Publisher
 
 
 @pytest.mark.django_db
-def test_get_publishers(api_client):
+def test_get_publishers(api_client, faker):
     baker.make(
         Publisher,
-        name="Test Publisher",
+        name=faker.company(),
         _quantity=1,
     )
     response = api_client.get("/api/v1/publishers/")
@@ -31,30 +31,33 @@ def test_retrieve_publisher(api_client):
 
 
 @pytest.mark.django_db
-def test_create_publisher(api_client):
+def test_create_publisher(api_client, faker):
     data = {
-        "name": "Test Publisher",
-        "website": "https://example.com",
+        "name": faker.company(),
+        "website": faker.url(),
     }
 
     response = api_client.post("/api/v1/publishers/", data)
 
     assert response.status_code == status.HTTP_201_CREATED
-    assert Publisher.objects.filter(name="Test Publisher").exists()
+    assert Publisher.objects.filter(name=data["name"]).exists()
 
 
 @pytest.mark.django_db
-def test_update_publisher(api_client):
-    publisher = baker.make(Publisher, name="Old Name")
+def test_update_publisher(api_client, faker):
+    publisher = baker.make(Publisher, name=faker.company())
 
     response = api_client.put(
         f"/api/v1/publishers/{publisher.id}/",
-        {"name": "New Name", "website": publisher.website or "https://example.com"},
+        {
+            "name": faker.company(),
+            "website": publisher.website or faker.url(),
+        },
     )
 
     assert response.status_code == status.HTTP_200_OK
     publisher.refresh_from_db()
-    assert publisher.name == "New Name"
+    assert publisher.name == response.data["name"]
 
 
 @pytest.mark.django_db

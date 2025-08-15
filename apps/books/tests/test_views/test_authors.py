@@ -7,7 +7,7 @@ def test_author_crud(api_client, faker):
     payload = {
         "first_name": faker.first_name(),
         "last_name": faker.last_name(),
-        "birth_date": "1980-01-01",
+        "bio": faker.text(max_nb_chars=200),
     }
     response = api_client.post("/api/v1/authors/", payload, format="json")
     assert response.status_code == status.HTTP_201_CREATED

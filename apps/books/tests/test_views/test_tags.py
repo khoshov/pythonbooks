@@ -1,10 +1,15 @@
 import pytest
 from model_bakery import baker
 
+from apps.books.models import Tag
+
 
 @pytest.mark.django_db
 def test_tag_list_and_detail(api_client):
-    tags = baker.make("books.Tag", _quantity=3)
+    tags = baker.make(
+        Tag,
+        _quantity=3,
+    )
 
     response = api_client.get("/api/v1/tags/")
     assert response.status_code == 200
