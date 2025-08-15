@@ -1,4 +1,6 @@
-from pydantic import BaseModel, Field, field_validator
+from __future__ import annotations
+
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from typing import List, Optional
 
 
@@ -13,15 +15,16 @@ class CoverInput(BaseModel):
 
 
 class BookDetails(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     isbn: str = Field(alias="ISBN")
     year: Optional[str] = Field(alias="Год", default=None)
     pages: int = Field(default=0, alias="Страниц")
 
-    class Config:
-        populate_by_name = True
-
 
 class BookInput(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     book_title: str
     description: str
     author: List[AuthorInput]
@@ -34,6 +37,3 @@ class BookInput(BaseModel):
         if not v.isbn.strip():
             raise ValueError("ISBN is required")
         return v
-
-    class Config:
-        populate_by_name = True

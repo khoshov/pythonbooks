@@ -279,6 +279,17 @@ beat - запускает Celery Beat — компонент, который п�
 -l info - уровень логирования (DEBUG, INFO, WARNING, ERROR)
 ```
 
+## Тестирование с coverage
+
+Проект использует **pytest** и **coverage** для запуска тестов и измерения покрытия кода.
+
+### Запуск тестов с очисткой предыдущих результатов
+```bash
+uv run coverage erase
+uv run coverage run -m pytest tests/management/ tests/services/ tests/scrapers/ -v
+uv run coverage report --include="apps/books/management/*,apps/books/services/*,apps/books/scrapers/*"
+```
+
 ## 📄 Лицензия
 
 Этот проект лицензирован под MIT License - см. файл [LICENSE](LICENSE) для деталей.
@@ -291,6 +302,3 @@ beat - запускает Celery Beat — компонент, который п�
 3. Используйте `make health` для диагностики
 
 ---
-
-**Разработано с ❤️ используя современные инструменты Python**
-
