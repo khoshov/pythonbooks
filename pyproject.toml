@@ -13,4 +13,9 @@ dependencies = [
     "psycopg2-binary>=2.9.10",
     "sorl-thumbnail==12.11.0",
     "python-dotenv>=1.0.0",
+    "celery==5.5.3",
+    "billiard==4.2.1",
+    "kombu==5.5.4",
+    "vine==5.1.0",
+    "redis>=6.2.0",
 ]

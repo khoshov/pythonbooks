@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import environ
+from celery.schedules import crontab
 
 # Initialize environment variables
 env = environ.Env()
@@ -100,7 +101,7 @@ LANGUAGES = [
     ("en", "English"),
     ("ru", "Russian"),
 ]
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -121,6 +122,10 @@ STATIC_URL = "static/"
 # ====================
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
+# ====================
+# DJANGO REST FRAMEWORK
+# ====================
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
@@ -129,4 +134,16 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ],
+}
+
+# ====================
+# CELERY SETTINGS
+# ====================
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_BEAT_SCHEDULE = {
+    "parse-books-every-night": {
+        "task": "apps.books.tasks.parse_books_task",
+        "schedule": crontab(hour=1, minute=11),
+    }
 }

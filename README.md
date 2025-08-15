@@ -1,182 +1,298 @@
 
+# 📚 PythonBooks
+
 [![Ruff](https://github.com/khoshov/pythonbooks/actions/workflows/ruff.yml/badge.svg)](https://github.com/khoshov/pythonbooks/actions/workflows/ruff.yml)
 ![API Coverage](https://img.shields.io/badge/API%20Coverage-100%25-brightgreen)
 ## Структура
+[![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://python.org)
+[![Django](https://img.shields.io/badge/Django-5.0-green.svg)](https://djangoproject.com)
+[![Docker](https://img.shields.io/badge/Docker-Enabled-blue.svg)](https://docker.com)
+[![UV](https://img.shields.io/badge/UV-Package%20Manager-orange.svg)](https://astral.sh)
 
-<details>
+> Современное Django-приложение для управления книгами с использованием UV, Docker и современных инструментов разработки.
 
-```python
+## 🚀 Быстрый старт
 
-pythonbooks
-│
-├── .github/workflows/
-│   └── ruff.yml
+### Вариант 1: Docker (рекомендуется)
+```bash
+git clone https://github.com/khoshov/pythonbooks.git
+cd pythonbooks
+cp .env.example .env
+make dev
+```
+
+### Вариант 2: Локальная установка
+```bash
+git clone https://github.com/khoshov/pythonbooks.git
+cd pythonbooks
+uv sync
+cp .env.example .env
+uv run manage.py migrate
+uv run manage.py runserver
+```
+
+## 📋 Требования
+
+- **Python 3.13+**
+- **Docker & Docker Compose** (для контейнеризации)
+- **UV** (менеджер пакетов)
+- **PostgreSQL** (база данных)
+
+## 🏗️ Структура проекта
+
+```
+pythonbooks/
+├── 🐳 docker-compose.yml       # Конфигурация Docker Compose
+├── 🐳 Dockerfile              # Образ приложения
+├── 🐳 entrypoint.sh           # Точка входа контейнера
+├── 📦 pyproject.toml          # Конфигурация проекта и зависимости
+├── 📦 uv.lock                 # Файл блокировки зависимостей
+├── 🔧 Makefile                # Команды для разработки
+├── 📝 .env.example            # Пример переменных окружения
+├── 🔒 .pre-commit-config.yaml # Конфигурация pre-commit хуков
 │
 ├── apps/
-│   └── books/
-├── config/
+│   └── books/                 # Django приложение для книг
+│       ├── scrapers/          # Скрейперы для сбора данных
+│       ├── models.py          # Модели данных
+│       ├── views.py           # Представления
+│       └── admin.py           # Админ-панель
 │
-├── .dockerignore
-├── .env
-├── .gitignore
-├── .pre-commit-config.yaml
-├── 🐳 docker-compose.yml
-├── 🐳 Dockerfile
-├── 🐳 entrypoint.sh - запускается внутри контейнера при старте, для миграций, запуска сервера и т.п.
-├── Makefile
+├── config/                    # Настройки Django
+│   ├── settings.py            # Основные настройки
+│   ├── urls.py                # URL конфигурация
+│   └── wsgi.py                # WSGI приложение
 │
-├── manage.py
-│
-├── 📦 pyproject.toml
-├── README.md
-├── 📦 requirements.txt
-└── 📦 uv.lock
+└── .github/workflows/         # CI/CD пайплайны
+    └── ruff.yml               # Проверка кода с Ruff
 ```
 
-</details>
+## 🛠️ Команды разработки
 
----
-
-## Установка и использование UV
-
-<details>
-<summary>📦 Способы установки UV</summary>
-
-### 1. Установка через автономные установщики (рекомендуется)
-
-**Для macOS и Linux:**
+### Основные команды
 ```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
+make help              # Показать все доступные команды
+make dev              # Запустить среду разработки
+make build            # Собрать Docker образы
+make up               # Запустить все сервисы
+make down             # Остановить все сервисы
+make logs             # Показать логи
+make clean            # Очистить Docker ресурсы
 ```
 
-**Для Windows (PowerShell):**
-```powershell
+### Django команды
+```bash
+make migrate          # Применить миграции
+make makemigrations   # Создать миграции
+make createsuperuser  # Создать суперпользователя
+make shell            # Открыть Django shell
+make collectstatic    # Собрать статические файлы
+make startapp app=myapp  # Создать новое приложение
+```
+
+### Качество кода
+```bash
+make format           # Отформатировать код
+make lint             # Проверить код линтером
+make check            # Запустить все проверки
+make test             # Запустить тесты
+```
+
+### Утилиты
+```bash
+make backup           # Создать резервную копию БД
+make restore file=backup.sql  # Восстановить из резервной копии
+make health           # Проверить состояние сервисов
+```
+
+## 🐳 Docker конфигурация
+
+### Сервисы
+- **django**: Основное приложение Django
+- **postgres**: База данных PostgreSQL
+
+### Особенности
+- Использование non-root пользователя для безопасности
+- Healthcheck для мониторинга состояния
+- Именованные volumes для постоянства данных
+- Изолированная сеть для сервисов
+
+## 📦 Управление зависимостями с UV
+
+### Установка UV
+```bash
+# macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows (PowerShell)
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-### 2. Установка через PyPI (альтернативный способ)
+### Основные команды UV
 ```bash
-pip install uv
+uv sync               # Синхронизировать зависимости
+uv add package        # Добавить пакет
+uv remove package     # Удалить пакет
+uv run command        # Запустить команду в окружении
+uv python install 3.13  # Установить Python 3.13
 ```
 
-### Обновление UV
-После установки вы можете обновить UV до последней версии:
+## 🔍 Линтинг и форматирование
+
+Проект использует **Ruff** для проверки качества кода:
+
 ```bash
-uv self update
+# Проверка кода
+uvx ruff check .
+
+# Автоматическое исправление
+uvx ruff check --fix .
+
+# Форматирование
+uvx ruff format .
 ```
 
-🔗 Подробнее об установке: [Официальная документация](https://docs.astral.sh/uv/getting-started/installation/)
-</details>
-
----
-
-<details>
-<summary>🚀 Основные команды UV</summary>
-
-### Управление Python-окружением
-
-**Установка конкретной версии Python:**
+### Pre-commit хуки
 ```bash
-uv python install 3.13  # Установит Python 3.13
-```
+# Установка pre-commit
+uv add --dev pre-commit
 
-### Управление зависимостями
-
-**Синхронизация зависимостей проекта:**
-```bash
-uv sync  # Аналог pip install + pip-compile
-```
-
-**Запуск команд в окружении проекта:**
-```bash
-uv run <COMMAND>  # Например: uv run pytest
-```
-
-**Запуск Django-сервера:**
-```bash
-uv run manage.py runserver  # Альтернатива python manage.py runserver
-```
-</details>
-
----
-
-<details>
-<summary>🔍 Интеграция с Ruff</summary>
-
-### [Ruff](https://github.com/astral-sh/ruff) - это молниеносный линтер для Python, также разработанный Astral.
-
-**Установка Ruff через UV:**
-```bash
-uvx ruff  # Установит последнюю версию Ruff
-```
-
-**Проверка кода с помощью Ruff:**
-```bash
-uvx ruff check .  # Проверит все файлы в текущей директории
-```
-
-**Для отправки в github без проверки локально, использовать:**
-```bash
-git commit -m "feat: comment" --no-verify
-```
-
-**Полный список поддерживаемых опций ruff**
-```bash
-ruff check --help
-```
-
-```bash
-ruff check --fix .  # базовый линтинг с автоисправлением
-ruff check --exclude tests/ .  # игнорировать папку tests/
-ruff check --target-version py310 .  # проверка кода для Python 3.10+
-ruff check --select / --ignore  # выбор правил (например, --select=E501,F401)
-```
-
-</details>
-
----
-
-<details>
-<summary>🔍 автоматическая проверка Ruff перед коммитом</summary>
-
-[Ruff](https://github.com/astral-sh/ruff) - это молниеносный линтер для Python, также разработанный Astral.
-
-**Установить pre-commit:**
-```bash
-uv pip install pre-commit
-```
-
-**Добавьте конфиг .pre-commit-config.yaml:**
-```bash
-repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.10  # Актуальная версия Ruff (проверьте на GitHub)
-    hooks:
-      - id: ruff
-        args: [--fix]  # Автоматически исправляет ошибки
-      - id: ruff-format  # Проверка форматирования (если нужно)
-```
-
-**Установите хуки в репозиторий:**
-```bash
+# Установка хуков
 pre-commit install
-```
-Теперь Ruff будет запускаться перед каждым коммитом.
 
-**Проверить работу вручную:**
-```bash
+# Запуск вручную
 pre-commit run --all-files
 ```
-Теперь Ruff будет запускаться перед каждым коммитом.
 
-</details>
+## 🔧 Конфигурация
 
----
+### Переменные окружения
+Скопируйте `.env.example` в `.env` и настройте:
 
-## Запуск проекта в Docker
+```bash
+# Базовые настройки
+DEBUG=True
+SECRET_KEY=your-secret-key
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# База данных
+POSTGRES_DB=pythonbooks
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your-password
+```
+
+### Настройки для продакшена
+```bash
+DEBUG=False
+SECURE_SSL_REDIRECT=True
+SESSION_COOKIE_SECURE=True
+CSRF_COOKIE_SECURE=True
+```
+
+## 🚀 Деплой
+
+### Продакшен с Docker
+```bash
+make prod-build       # Собрать продакшен образы
+make prod-up          # Запустить продакшен
+make prod-down        # Остановить продакшен
+```
+
+### Здоровье приложения
+```bash
+curl http://localhost:8000/health/  # Проверка состояния
+```
+
+## 📝 Особенности проекта
+
+### Скрейпинг книг
+- Автоматический сбор данных о книгах
+- Настраиваемые скрейперы в `apps/books/scrapers/`
+- Контроль частоты запросов
+
+### Администрирование
+- Расширенная админ-панель Django
+- Управление книгами и авторами
+- Массовые операции
+
+### API
+- RESTful API для работы с данными
+- Аутентификация и авторизация
+- Документация API
+
+## 🤝 Участие в разработке
+
+1. Форкните репозиторий
+2. Создайте ветку для функции: `git checkout -b feature/amazing-feature`
+3. Зафиксируйте изменения: `git commit -m 'Add amazing feature'`
+4. Отправьте в ветку: `git push origin feature/amazing-feature`
+5. Создайте Pull Request
+
+### Правила разработки
+- Используйте `make format` перед коммитом
+- Все тесты должны проходить
+- Добавляйте тесты для новой функциональности
+- Следуйте PEP 8 стандартам
+
+## 📊 Мониторинг
+
+### Логи
+```bash
+make logs             # Все логи
+docker-compose logs django  # Только Django
+```
+
+### Метрики
+- Health checks для контейнеров
+- Мониторинг состояния БД
+- Отслеживание производительности
+
+## 🔗 Полезные ссылки
+
+- [Django Documentation](https://docs.djangoproject.com/)
+- [UV Documentation](https://docs.astral.sh/uv/)
+- [Ruff Documentation](https://docs.astral.sh/ruff/)
+- [Docker Documentation](https://docs.docker.com/)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+
 
 **Сборка и запуск контейнеров:**
 ```bash
 docker-compose build --no-cache
 docker-compose up  # Соберет и запустит сервисы
 ```
+
+## Запуск задачи в Celery:
+
+**Команда для запуска задачи:**
+сначала redis:
+```bash
+docker run -d -p 6379:6379 --name redis redis:alpine
+```
+
+потом celery:
+```bash
+celery -A config beat -l info
+```
+
+```markdown
+-A config - указывает где находится Celery-приложение
+beat - запускает Celery Beat — компонент, который периодически отправляет задачи в очередь
+-l info - уровень логирования (DEBUG, INFO, WARNING, ERROR)
+```
+
+## 📄 Лицензия
+
+Этот проект лицензирован под MIT License - см. файл [LICENSE](LICENSE) для деталей.
+
+## 🆘 Поддержка
+
+Если у вас есть вопросы или проблемы:
+1. Проверьте [Issues](https://github.com/khoshov/pythonbooks/issues)
+2. Создайте новый Issue с подробным описанием
+3. Используйте `make health` для диагностики
+
+---
+
+**Разработано с ❤️ используя современные инструменты Python**
+
