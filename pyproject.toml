@@ -26,6 +26,7 @@ dependencies = [
     "loguru>=0.7.0",
     "httpx>=0.28.1",
     "django-celery-beat>=2.8.1",
+    "django-cors-headers>=4.7.0",
 ]
 
 [dependency-groups]

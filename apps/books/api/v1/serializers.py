@@ -39,6 +39,7 @@ class BookSerializer(serializers.ModelSerializer):
             "author",
             "publisher",
             "published_at",
+            "cover_image",
         ]
 
 
