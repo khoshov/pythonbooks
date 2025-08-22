@@ -1,3 +1,5 @@
+from datetime import timezone
+
 from rest_framework import serializers
 
 from ...models import (
@@ -102,3 +104,15 @@ class CommentSerializer(serializers.ModelSerializer):
             "created",
             "modified",
         ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["created"] = (
+            instance.created.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+        )
+        data["modified"] = (
+            instance.modified.astimezone(timezone.utc)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+        return data
