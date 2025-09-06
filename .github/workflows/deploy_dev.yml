@@ -28,4 +28,8 @@ jobs:
           
           sudo systemctl restart pythonbooks
           
+          cd frontend
+          npm i
+          npm run build
+          
           echo "Deployment successful!"
