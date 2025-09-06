@@ -1,4 +1,3 @@
-import React from 'react';
 import BookCard from './BookCard';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { cn } from '@/lib/utils';
@@ -25,13 +24,13 @@ export default function LazyBookCard({
 
   const defaultPlaceholder = (
     <div className={cn(
-      "animate-pulse bg-gray-200 rounded-lg aspect-[3/4] w-full",
+      "animate-pulse bg-gray-200 rounded-lg w-full h-full min-h-[400px]",
       className
     )} />
   );
 
   return (
-    <div ref={elementRef} className="w-full">
+    <div ref={elementRef} className="w-full h-full">
       {hasIntersected ? (
         <BookCard book={book} onClick={onClick} />
       ) : (
