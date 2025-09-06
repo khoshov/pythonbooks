@@ -1,5 +1,4 @@
-import { useCallback } from 'react';
-import { useIntersectionObserver } from './useIntersectionObserver';
+import { useEffect, useRef } from 'react';
 
 interface UseInfiniteScrollOptions {
   hasNextPage: boolean;
@@ -14,22 +13,32 @@ export function useInfiniteScroll({
   onLoadMore,
   rootMargin = '100px',
 }: UseInfiniteScrollOptions) {
-  const { elementRef, isIntersecting } = useIntersectionObserver({
-    rootMargin,
-    threshold: 0.1,
-  });
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
-  // Trigger load more when the element comes into view
-  const handleIntersection = useCallback(() => {
-    if (isIntersecting && hasNextPage && !isLoading) {
-      onLoadMore();
-    }
-  }, [isIntersecting, hasNextPage, isLoading, onLoadMore]);
+  useEffect(() => {
+    const element = sentinelRef.current;
+    if (!element) return;
 
-  // Call the handler when intersection changes
-  handleIntersection();
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasNextPage && !isLoading) {
+          onLoadMore();
+        }
+      },
+      {
+        rootMargin,
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasNextPage, isLoading, onLoadMore, rootMargin]);
 
   return {
-    sentinelRef: elementRef,
+    sentinelRef,
   };
 }
