@@ -28,7 +28,6 @@ jobs:
           
           sudo systemctl restart pythonbooks
           
-          cd pythonbooks
           cd frontend
           npm i
           npm run build
