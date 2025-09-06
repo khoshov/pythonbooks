@@ -29,7 +29,7 @@
                        placeholder="Поиск книг, авторов..." 
                        class="input input-bordered"
                        name="search"
-                       hx-get="/books/search/"
+                       hx-get="{% url 'books:search' %}"
                        hx-trigger="input changed delay:300ms"
                        hx-target="#books-container"
                        hx-push-url="true">
@@ -41,17 +41,14 @@
                 </label>
                 <select class="select select-bordered" 
                         name="category"
-                        hx-get="/books/filter/"
+                        hx-get="{% url 'books:filter' %}"
                         hx-trigger="change"
                         hx-target="#books-container"
                         hx-push-url="true">
                     <option value="">Все категории</option>
-                    <option value="beginner">Начальный</option>
-                    <option value="intermediate">Средний</option>
-                    <option value="advanced">Продвинутый</option>
-                    <option value="web">Веб-разработка</option>
-                    <option value="data">Наука о данных</option>
-                    <option value="ml">Машинное обучение</option>
+                    {% for tag in tags %}
+                        <option value="{{ tag.slug }}">{{ tag.name }}</option>
+                    {% endfor %}
                 </select>
             </div>
             
@@ -61,7 +58,7 @@
                 </label>
                 <select class="select select-bordered" 
                         name="publisher"
-                        hx-get="/books/filter/"
+                        hx-get="{% url 'books:filter' %}"
                         hx-trigger="change"
                         hx-target="#books-container"
                         hx-push-url="true">
@@ -78,7 +75,7 @@
                 </label>
                 <select class="select select-bordered" 
                         name="sort"
-                        hx-get="/books/filter/"
+                        hx-get="{% url 'books:filter' %}"
                         hx-trigger="change"
                         hx-target="#books-container"
                         hx-push-url="true">

@@ -22,10 +22,10 @@
             </div>
             <div class="card-actions justify-end mt-4">
                 <button class="btn btn-primary btn-sm" 
-                        hx-get="/books/{{ book.id }}/"
+                        hx-get="{% url 'books:detail' book.id %}"
                         hx-target="#modal-content"
                         hx-swap="innerHTML"
-                        onclick="book_modal.showModal()">
+                        onclick="document.getElementById('book_modal').showModal()">
 Подробнее
                 </button>
             </div>

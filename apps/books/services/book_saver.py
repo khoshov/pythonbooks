@@ -9,6 +9,7 @@ from ..models import Author, Book, Publisher
 from ..validators.validators import BookInput
 from .author_service import AuthorService
 from .publisher_service import PublisherService
+from .tag_matcher import find_matching_tags
 
 logger = get_logger(__name__)
 author_service = AuthorService(Author)
@@ -77,3 +78,8 @@ class BookSaver:
 
         book.author.set(authors)
         logger.debug(f"saved book with authors: {book_input.book_title}")
+        matching_tags = find_matching_tags(book.title)
+        book.tags.set(matching_tags)
+        logger.debug(
+            f"assigned tags to book '{book.title}': {[tag.name for tag in matching_tags]}"
+        )
