@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Calendar, User, Building, FileText, Barcode, ExternalLink, Heart, MessageCircle, Loader2 } from 'lucide-react';
 import {
   Dialog,
@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import BookImage from './BookImage';
 import { booksApi } from '@/lib/api';
-import type { Book, Comment } from '@/types';
+import type { Book } from '@/types';
 
 interface BookDetailModalProps {
   bookId: number | null;

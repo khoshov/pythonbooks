@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import BookCard from './BookCard';
 import LazyBookCard from './LazyBookCard';
@@ -6,7 +6,7 @@ import BookFilters from './BookFilters';
 import { Button } from '@/components/ui/button';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { booksApi } from '@/lib/api';
-import type { Book, Publisher, Tag } from '@/types';
+import type { Book, Publisher } from '@/types';
 
 interface BooksListProps {
   onBookClick: (book: Book) => void;
@@ -21,7 +21,6 @@ export default function BooksList({
 }: BooksListProps) {
   const [books, setBooks] = useState<Book[]>([]);
   const [publishers, setPublishers] = useState<Publisher[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [nextPage, setNextPage] = useState<string | null>(null);
@@ -68,13 +67,9 @@ export default function BooksList({
 
   const loadInitialData = async () => {
     try {
-      const [publishersResponse, tagsResponse] = await Promise.all([
-        booksApi.getPublishers(),
-        booksApi.getTags(),
-      ]);
+      const publishersResponse = await booksApi.getPublishers();
       
       setPublishers(publishersResponse);
-      setTags(tagsResponse);
     } catch (error) {
       console.error('Error loading initial data:', error);
     }
@@ -123,7 +118,6 @@ export default function BooksList({
     <div>
       <BookFilters
         publishers={publishers}
-        tags={tags}
         onSearch={handleSearch}
         onCategoryChange={handleCategoryChange}
         onPublisherChange={handlePublisherChange}

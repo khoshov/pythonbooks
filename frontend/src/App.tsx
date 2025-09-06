@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Layout from '@/components/Layout';
 import BooksList from '@/components/BooksList';
 import BookDetailModal from '@/components/BookDetailModal';

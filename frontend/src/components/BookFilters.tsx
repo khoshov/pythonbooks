@@ -1,4 +1,3 @@
-import React from 'react';
 import { Search } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,11 +9,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { Publisher, Tag } from '@/types';
+import { useState } from 'react';
+import type { Publisher } from '@/types';
 
 interface BookFiltersProps {
   publishers: Publisher[];
-  tags: Tag[];
   onSearch: (query: string) => void;
   onCategoryChange: (category: string) => void;
   onPublisherChange: (publisherId: string) => void;
@@ -23,13 +22,12 @@ interface BookFiltersProps {
 
 export default function BookFilters({
   publishers,
-  tags,
   onSearch,
   onCategoryChange,
   onPublisherChange,
   onSortChange,
 }: BookFiltersProps) {
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
