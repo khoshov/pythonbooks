@@ -20,11 +20,20 @@ jobs:
         cache: 'npm'
         cache-dependency-path: frontend/package-lock.json
 
-    - name: Build frontend
+    - name: Install deps (frontend)
+      working-directory: frontend
+      run: npm ci
+
+    - name: Debug TypeScript config and paths
+      working-directory: frontend
       run: |
-        cd frontend
-        npm ci
-        npm run build
+        npx tsc -p tsconfig.json --showConfig | sed -n '1,200p'
+        ls -la src/lib || true
+        grep -R --line-number --color=never "from '@/lib" src || true
+    
+    - name: Build frontend
+      working-directory: frontend
+      run: npm run build
 
     - name: Copy files to server
       uses: appleboy/scp-action@v0.1.7
