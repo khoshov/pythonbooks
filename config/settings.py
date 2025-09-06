@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Third party apps
+    "corsheaders",
     "django_celery_beat",
     "django_extensions",
     "django_filters",
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -154,3 +156,17 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(hour=1, minute=11),
     }
 }
+
+# ====================
+# CORS SETTINGS
+# ====================
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Vite dev server
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",  # Alternative frontend port
+    "http://127.0.0.1:3000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_ALL_ORIGINS = DEBUG  # Only allow all origins in development
