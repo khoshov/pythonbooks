@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import BooksList from '@/components/BooksList';
 import { Button } from '@/components/ui/button';
@@ -7,7 +6,6 @@ import type { Book } from '@/types';
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   
   const handleBookClick = (book: Book) => {
     navigate(`/book/${book.id}`);
