@@ -13,6 +13,27 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Build frontend
+      run: |
+        cd frontend
+        npm ci
+        npm run build
+
+    - name: Copy files to server
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.DEV_SERVER_HOST }}
+        username: ${{ secrets.DEV_SSH_USERNAME }}
+        key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+        source: "frontend/dist/*"
+        target: "${{ secrets.DEV_PROJECT_PATH }}/frontend/dist/"
+
     - name: Deploy
       uses: appleboy/ssh-action@v1.0.0
       with:
@@ -27,9 +48,5 @@ jobs:
           uv run manage.py migrate
           
           sudo systemctl restart pythonbooks
-          
-          cd frontend
-          npm i
-          npm run build
-          
+
           echo "Deployment successful!"
