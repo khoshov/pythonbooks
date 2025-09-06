@@ -66,11 +66,12 @@ jobs:
             )
             mkdir -p ${{ secrets.DEV_PROJECT_PATH }}/frontend/dist
 
-      - name: Copy static files to server
+      - name: Upload frontend dist
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEV_SERVER_HOST }}
           username: ${{ secrets.DEV_SSH_USERNAME }}
           key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
-          source: "frontend/*"
-          target: "${{ secrets.DEV_PROJECT_PATH }}/frontend/"
+          source: "frontend/dist/*"
+          target: "${{ secrets.DEV_PROJECT_PATH }}/frontend/dist/"
+          overwrite: true
