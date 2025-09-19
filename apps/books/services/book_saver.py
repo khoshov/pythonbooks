@@ -41,6 +41,21 @@ class BookSaver:
 
         publisher = self.Publisher.get_or_create_publisher("Издательство Питер")
 
+        paper_price = None
+        electronic_price = None
+        if book_input.price and isinstance(book_input.price, dict):
+            paper_price_str = book_input.price.get("price", "").replace("₽", "").strip()
+            electronic_price_str = (
+                book_input.price.get("electronic_price", "").replace("₽", "").strip()
+            )
+            if paper_price_str and paper_price_str.replace(".", "", 1).isdigit():
+                paper_price = float(paper_price_str)
+            if (
+                electronic_price_str
+                and electronic_price_str.replace(".", "", 1).isdigit()
+            ):
+                electronic_price = float(electronic_price_str)
+
         book = Book.objects.filter(isbn_code=isbn).first()
         if book:
             logger.info(f"updating book: {book_input.book_title} ({isbn})")
@@ -51,6 +66,9 @@ class BookSaver:
             book.cover_image = book_input.cover.cover_image or ""
             book.language = "Русский"
             book.publisher = publisher
+            book.url = book_input.url or ""
+            book.price = paper_price
+            book.electronic_price = electronic_price
             book.save()
         else:
             logger.info(f"creating new book: {book_input.book_title} ({isbn})")
@@ -63,6 +81,9 @@ class BookSaver:
                 cover_image=book_input.cover.cover_image or "",
                 language="Русский",
                 publisher=publisher,
+                url=book_input.url or "",
+                price=paper_price,
+                electronic_price=electronic_price,
             )
 
         authors = []

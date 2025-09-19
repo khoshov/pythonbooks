@@ -11,7 +11,7 @@ class Publisher(models.Model):
         max_length=255,
     )
     website = models.URLField(
-        "Сайт издательства",
+        "Сайт издательства",
         max_length=255,
         blank=True,
     )
@@ -96,6 +96,25 @@ class Book(TimeStampedModel):
     language = models.CharField(
         "Язык",
         max_length=50,
+    )
+    url = models.URLField(
+        "URL книги",
+        max_length=255,
+        blank=True,
+    )
+    price = models.DecimalField(
+        "Цена",
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
+    electronic_price = models.DecimalField(
+        "Цена электронной версии",
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
     )
 
     author = models.ManyToManyField(

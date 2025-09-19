@@ -160,13 +160,32 @@ CELERY_BEAT_SCHEDULE = {
 # ====================
 # CORS SETTINGS
 # ====================
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Vite dev server
-    "http://127.0.0.1:5173",
-    "http://localhost:3000",  # Alternative frontend port
-    "http://127.0.0.1:3000",
-]
+# Настройки CORS (Cross-Origin Resource Sharing)
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
+CORS_ALLOW_ALL_ORIGINS = True  # Разрешить все источники (только для разработки!)
 
+# Разрешить куки и заголовки авторизации
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOW_ALL_ORIGINS = DEBUG  # Only allow all origins in development
+# Разрешенные методы (опционально, можно не указывать, так как по умолчанию разрешены безопасные методы)
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+# Разрешенные заголовки (опционально)
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Calendar, User, Building, FileText, Barcode, ExternalLink, Heart, MessageCircle, Loader2 } from 'lucide-react';
 import {
   Dialog,
@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import BookImage from './BookImage';
 import { booksApi } from '@/lib/api';
-import type { Book, Comment } from '@/types';
+import type { Book } from '@/types';
 
 interface BookDetailModalProps {
   bookId: number | null;
@@ -56,7 +56,7 @@ export default function BookDetailModal({ bookId, open, onOpenChange }: BookDeta
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-7xl w-[95vw] max-h-[90vh] overflow-y-auto">
         {loading ? (
           <div className="flex justify-center items-center py-12">
             <Loader2 className="h-8 w-8 animate-spin" />
@@ -67,9 +67,9 @@ export default function BookDetailModal({ bookId, open, onOpenChange }: BookDeta
               <DialogTitle>{book.title}</DialogTitle>
             </DialogHeader>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">
               {/* Book Cover */}
-              <div className="md:col-span-1">
+              <div className="lg:col-span-2">
                 <div className="sticky top-4">
                   <BookImage
                     src={book.cover_image}
@@ -81,7 +81,7 @@ export default function BookDetailModal({ bookId, open, onOpenChange }: BookDeta
               </div>
 
               {/* Book Info */}
-              <div className="md:col-span-2">
+              <div className="lg:col-span-3">
                 <div className="space-y-4">
                   <div className="flex flex-wrap gap-2">
                     <Badge variant="outline" className="flex items-center">

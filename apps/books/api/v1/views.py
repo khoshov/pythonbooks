@@ -45,7 +45,13 @@ class BookViewSet(viewsets.ModelViewSet):
     )
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = BookFilter
-    ordering_fields = ["title", "published_at", "created", "publisher__name"]
+    ordering_fields = [
+        "title",
+        "published_at",
+        "created",
+        "publisher__name",
+        "author__last_name",
+    ]
     ordering = ["-created"]
     permission_classes = [AllowAny]
 

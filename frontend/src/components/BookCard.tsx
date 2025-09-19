@@ -1,4 +1,3 @@
-import React from 'react';
 import { Calendar, User, Building, FileText } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -17,10 +16,10 @@ export default function BookCard({ book, onClick }: BookCardProps) {
 
   return (
     <Card 
-      className="cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 overflow-hidden py-0" 
+      className="cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 overflow-hidden py-0 h-full flex flex-col" 
       onClick={handleClick}
     >
-      <CardContent className="p-0">
+      <CardContent className="p-0 flex flex-col h-full">
         <div className="relative">
           <BookImage
             src={book.cover_image}
@@ -42,30 +41,33 @@ export default function BookCard({ book, onClick }: BookCardProps) {
           </div>
         </div>
         
-        <div className="p-4">
+        <div className="p-4 flex flex-col flex-1">
           <h3 className="font-semibold text-lg mb-2 line-clamp-2">{book.title}</h3>
           
-          <div className="space-y-2 text-sm text-muted-foreground">
+          <div className="space-y-2 text-sm text-muted-foreground flex-1">
             <div className="flex items-center">
-              <User className="h-4 w-4 mr-2" />
+              <User className="h-4 w-4 mr-2 flex-shrink-0" />
               <span className="line-clamp-1">
-                {book.author.map(a => `${a.first_name} ${a.last_name}`).join(', ')}
+                {book.author && book.author.length > 0 
+                  ? book.author.map(a => `${a.first_name} ${a.last_name}`).join(', ')
+                  : 'Автор не указан'
+                }
               </span>
             </div>
             
             <div className="flex items-center">
-              <Building className="h-4 w-4 mr-2" />
+              <Building className="h-4 w-4 mr-2 flex-shrink-0" />
               <span className="line-clamp-1">{book.publisher.name}</span>
             </div>
             
             <div className="flex items-center">
-              <Calendar className="h-4 w-4 mr-2" />
+              <Calendar className="h-4 w-4 mr-2 flex-shrink-0" />
               <span>{new Date(book.published_at).getFullYear()}</span>
             </div>
             
-            {book.total_pages && (
+            {book.total_pages !== null && book.total_pages !== undefined && book.total_pages > 0 && (
               <div className="flex items-center">
-                <FileText className="h-4 w-4 mr-2" />
+                <FileText className="h-4 w-4 mr-2 flex-shrink-0" />
                 <span>{book.total_pages} стр.</span>
               </div>
             )}
