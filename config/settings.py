@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Third party apps
+    "corsheaders",
     "django_celery_beat",
     "django_extensions",
     "django_filters",
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -163,3 +165,34 @@ CELERY_BEAT_SCHEDULE = {
 ELASTICSEARCH_DSL = {
     "default": {"hosts": os.getenv("ELASTICSEARCH_HOSTS", "elasticsearch:9200")},
 }
+# ====================
+# CORS SETTINGS
+# ====================
+# Настройки CORS (Cross-Origin Resource Sharing)
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
+
+# Разрешить куки и заголовки авторизации
+CORS_ALLOW_CREDENTIALS = True
+
+# Разрешенные методы (опционально, можно не указывать, так как по умолчанию разрешены безопасные методы)
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+# Разрешенные заголовки (опционально)
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]

@@ -28,12 +28,12 @@ dependencies = [
     "loguru>=0.7.0",
     "httpx>=0.28.1",
     "django-celery-beat>=2.8.1",
-
-    # Elasticsearch 7 стек
     "django-elasticsearch-dsl==7.4.0",
     "elasticsearch==7.17.0",
     "elasticsearch-dsl==7.4.0",
     "django-elasticsearch-dsl-drf==0.22.1",
+    "django-cors-headers>=4.7.0",
+    "gunicorn>=23.0.0",
 ]
 
 [dependency-groups]

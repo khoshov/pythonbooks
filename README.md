@@ -19,22 +19,41 @@ cp .env.example .env
 make dev
 ```
 
-### Вариант 2: Локальная установка
+### Вариант 2: Локальная установка с React UI
 ```bash
 git clone https://github.com/khoshov/pythonbooks.git
 cd pythonbooks
+
+# Настройка backend (Django API)
 uv sync
 cp .env.example .env
+# Отредактируйте .env файл, установите DATABASE_URL=sqlite:///db.sqlite3 для простого запуска
 uv run manage.py migrate
-uv run manage.py runserver
+uv run manage.py createsuperuser  # Опционально
+uv run python create_sample_data.py  # Создать тестовые данные
+
+# Запуск Django API сервера
+uv run manage.py runserver 127.0.0.1:8001
+
+# В новом терминале - настройка frontend (React)
+cd frontend
+npm install
+npm run dev
 ```
+
+### Доступ к приложению
+- **React UI**: http://localhost:5173/ (современный интерфейс)
+- **Django API**: http://localhost:8001/api/v1/ (REST API)
+- **Django Admin**: http://localhost:8001/admin/ (панель администратора)
 
 ## 📋 Требования
 
 - **Python 3.13+**
+- **Node.js 18+** (для React frontend)
+- **npm/yarn** (менеджер пакетов для frontend)
 - **Docker & Docker Compose** (для контейнеризации)
-- **UV** (менеджер пакетов)
-- **PostgreSQL** (база данных)
+- **UV** (менеджер пакетов Python)
+- **PostgreSQL** (база данных) или **SQLite** (для быстрого старта)
 
 ## 🏗️ Структура проекта
 
@@ -51,6 +70,7 @@ pythonbooks/
 │
 ├── apps/
 │   └── books/                 # Django приложение для книг
+│       ├── api/v1/            # REST API endpoints
 │       ├── scrapers/          # Скрейперы для сбора данных
 │       ├── models.py          # Модели данных
 │       ├── views.py           # Представления
@@ -61,13 +81,22 @@ pythonbooks/
 │   ├── urls.py                # URL конфигурация
 │   └── wsgi.py                # WSGI приложение
 │
+├── frontend/                  # React приложение
+│   ├── src/
+│   │   ├── components/        # React компоненты
+│   │   ├── lib/              # Утилиты и API клиент
+│   │   ├── types/            # TypeScript типы
+│   │   └── App.tsx           # Главный компонент
+│   ├── package.json          # Зависимости Node.js
+│   └── vite.config.ts        # Конфигурация Vite
+│
 └── .github/workflows/         # CI/CD пайплайны
     └── ruff.yml               # Проверка кода с Ruff
 ```
 
 ## 🛠️ Команды разработки
 
-### Основные команды
+### Docker команды
 ```bash
 make help              # Показать все доступные команды
 make dev              # Запустить среду разработки
@@ -76,6 +105,16 @@ make up               # Запустить все сервисы
 make down             # Остановить все сервисы
 make logs             # Показать логи
 make clean            # Очистить Docker ресурсы
+```
+
+### Frontend команды (React)
+```bash
+cd frontend
+npm install           # Установить зависимости
+npm run dev           # Запустить dev сервер (http://localhost:5173)
+npm run build         # Собрать для продакшена
+npm run preview       # Предпросмотр билда
+npm run lint          # Проверка ESLint
 ```
 
 ### Django команды
@@ -213,9 +252,16 @@ curl http://localhost:8000/health/  # Проверка состояния
 - Управление книгами и авторами
 - Массовые операции
 
+### Modern React UI
+- Современный интерфейс на React + TypeScript
+- shadcn/ui компоненты с Tailwind CSS
+- Адаптивный дизайн и тёмная тема
+- Поиск, фильтрация и пагинация
+
 ### API
 - RESTful API для работы с данными
-- Аутентификация и авторизация
+- Аутентификация и авторизация  
+- CORS поддержка для frontend
 - Документация API
 
 ## 🤝 Участие в разработке
@@ -245,9 +291,40 @@ docker-compose logs django  # Только Django
 - Мониторинг состояния БД
 - Отслеживание производительности
 
+## 🔧 Решение проблем
+
+### Проблемы с npm кэшем
+Если возникают ошибки при установке зависимостей:
+```bash
+# Используйте временный кэш
+NPM_CONFIG_CACHE=/tmp/.npm npm install
+
+# Или очистите кэш
+npm cache clean --force
+```
+
+### Проблемы с портами
+Если порт 8000 занят, используйте другой:
+```bash
+# Django на другом порту
+python manage.py runserver 127.0.0.1:8001
+
+# Обновите API_BASE_URL в frontend/src/lib/api.ts
+```
+
+### База данных
+Для быстрого тестирования используйте SQLite:
+```bash
+# В .env файле
+DATABASE_URL=sqlite:///db.sqlite3
+```
+
 ## 🔗 Полезные ссылки
 
 - [Django Documentation](https://docs.djangoproject.com/)
+- [React Documentation](https://react.dev/)
+- [shadcn/ui Components](https://ui.shadcn.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
 - [UV Documentation](https://docs.astral.sh/uv/)
 - [Ruff Documentation](https://docs.astral.sh/ruff/)
 - [Docker Documentation](https://docs.docker.com/)
