@@ -44,14 +44,13 @@ export default function BooksList({
 
     try {
       // Map frontend filters to backend API parameters
-      const { category, ...restFilters } = filters;
       const params: any = {
         page: isLoadMore ? filters.page + 1 : 1,
       };
 
       // Only add non-empty filter parameters
       if (filters.author) params.author = filters.author;
-      if (category) params.tag = category;
+      if (filters.category) params.tag = filters.category;
       if (filters.publisher) params.publisher = filters.publisher;
       if (filters.ordering) params.ordering = filters.ordering;
 
