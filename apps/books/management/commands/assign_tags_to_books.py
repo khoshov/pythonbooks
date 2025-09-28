@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from logger.books.log import get_logger
+
 from ...models import Book
 from ...services.tag_matcher import find_matching_tags
 

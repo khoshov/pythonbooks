@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
 
 from logger.books.log import get_logger
-from ...models import Tag
 
+from ...models import Tag
 
 logger = get_logger(__name__)
 

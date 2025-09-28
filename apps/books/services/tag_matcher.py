@@ -1,4 +1,5 @@
 from typing import List
+
 from django.db.models import QuerySet
 
 from ..models import Tag

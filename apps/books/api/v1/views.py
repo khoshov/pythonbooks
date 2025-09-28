@@ -61,7 +61,6 @@ class BookViewSet(viewsets.ModelViewSet):
         return BookSerializer
 
 
-
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.select_related("user", "book")
     serializer_class = CommentSerializer
