@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Book, Publisher, Tag, PaginatedResponse } from '@/types';
+import type { Author, Book, Publisher, Tag, PaginatedResponse } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
 
@@ -12,8 +12,8 @@ const api = axios.create({
 
 export const booksApi = {
   getBooks: async (params?: {
-    search?: string;
-    category?: string;
+    author?: string;
+    tag?: string;
     publisher?: string;
     ordering?: string;
     page?: number;
@@ -35,6 +35,29 @@ export const booksApi = {
   getTags: async (): Promise<Tag[]> => {
     const response = await api.get('/tags/');
     return response.data.results || response.data;
+  },
+
+  getAuthors: async (): Promise<Author[]> => {
+    const allAuthors: Author[] = [];
+    let page = 1;
+    let hasMore = true;
+
+    while (hasMore) {
+      const response = await api.get('/authors/', { params: { page } });
+      const data = response.data;
+
+      if (data.results) {
+        allAuthors.push(...data.results);
+        hasMore = !!data.next;
+        page++;
+      } else {
+        // Non-paginated response
+        allAuthors.push(...data);
+        hasMore = false;
+      }
+    }
+
+    return allAuthors;
   },
 };
 

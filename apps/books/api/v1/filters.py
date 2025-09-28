@@ -7,9 +7,9 @@ class BookFilter(FilterSet):
     title = CharFilter(
         lookup_expr="icontains",
     )
-    author = CharFilter(
-        field_name="author__last_name",
-        lookup_expr="icontains",
+    author = NumberFilter(
+        field_name="author__id",
+        lookup_expr="exact",
     )
     publisher = NumberFilter(
         field_name="publisher__id",

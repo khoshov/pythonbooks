@@ -13,7 +13,6 @@ services:
     volumes:
       - ./apps:/app/apps
       - ./config:/app/config
-      - ./templates:/app/templates
       - ./static:/app/static
       - ./manage.py:/app/manage.py
     depends_on:
@@ -77,7 +76,6 @@ services:
     volumes:
       - ./apps:/app/apps
       - ./config:/app/config
-      - ./templates:/app/templates
       - ./static:/app/static
       - ./manage.py:/app/manage.py
     env_file:
@@ -104,7 +102,6 @@ services:
     volumes:
       - ./apps:/app/apps
       - ./config:/app/config
-      - ./templates:/app/templates
       - ./static:/app/static
       - ./manage.py:/app/manage.py
     env_file:

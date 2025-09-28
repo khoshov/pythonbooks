@@ -6,7 +6,7 @@ import BookFilters from './BookFilters';
 import { Button } from '@/components/ui/button';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { booksApi } from '@/lib/api';
-import type { Book, Publisher, Tag } from '@/types';
+import type { Author, Book, Publisher, Tag } from '@/types';
 
 interface BooksListProps {
   onBookClick: (book: Book) => void;
@@ -20,13 +20,14 @@ export default function BooksList({
   enableInfiniteScroll = true 
 }: BooksListProps) {
   const [books, setBooks] = useState<Book[]>([]);
+  const [authors, setAuthors] = useState<Author[]>([]);
   const [publishers, setPublishers] = useState<Publisher[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [nextPage, setNextPage] = useState<string | null>(null);
   const [filters, setFilters] = useState({
-    search: '',
+    author: '',
     category: '',
     publisher: '',
     ordering: '-created',
@@ -42,14 +43,17 @@ export default function BooksList({
     }
 
     try {
-      // Create a new params object without the category property
+      // Map frontend filters to backend API parameters
       const { category, ...restFilters } = filters;
-      const params = {
-        ...restFilters,
-        // Map category filter to tag parameter for backend
-        tag: category,
+      const params: any = {
         page: isLoadMore ? filters.page + 1 : 1,
       };
+
+      // Only add non-empty filter parameters
+      if (filters.author) params.author = filters.author;
+      if (category) params.tag = category;
+      if (filters.publisher) params.publisher = filters.publisher;
+      if (filters.ordering) params.ordering = filters.ordering;
 
       const response = await booksApi.getBooks(params);
       
@@ -72,11 +76,13 @@ export default function BooksList({
 
   const loadInitialData = async () => {
     try {
-      const [publishersResponse, tagsResponse] = await Promise.all([
+      const [authorsResponse, publishersResponse, tagsResponse] = await Promise.all([
+        booksApi.getAuthors(),
         booksApi.getPublishers(),
         booksApi.getTags()
       ]);
-      
+
+      setAuthors(authorsResponse);
       setPublishers(publishersResponse);
       setTags(tagsResponse);
     } catch (error) {
@@ -90,10 +96,11 @@ export default function BooksList({
 
   useEffect(() => {
     loadBooks();
-  }, [filters.search, filters.category, filters.publisher, filters.ordering]);
+  }, [filters.author, filters.category, filters.publisher, filters.ordering]);
 
-  const handleSearch = (search: string) => {
-    setFilters(prev => ({ ...prev, search, page: 1 }));
+  const handleAuthorChange = (author: string) => {
+    const authorValue = author === 'all' ? '' : author;
+    setFilters(prev => ({ ...prev, author: authorValue, page: 1 }));
   };
 
   const handleCategoryChange = (category: string) => {
@@ -126,9 +133,10 @@ export default function BooksList({
   return (
     <div>
       <BookFilters
+        authors={authors}
         publishers={publishers}
         tags={tags}
-        onSearch={handleSearch}
+        onAuthorChange={handleAuthorChange}
         onCategoryChange={handleCategoryChange}
         onPublisherChange={handlePublisherChange}
         onSortChange={handleSortChange}
@@ -160,7 +168,12 @@ export default function BooksList({
 
           {books.length === 0 && !loading && (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">Книги не найдены</p>
+              <p className="text-muted-foreground">
+                {filters.author || filters.category || filters.publisher
+                  ? "По заданным фильтрам книги не найдены. Попробуйте изменить критерии поиска."
+                  : "Книги не найдены"
+                }
+              </p>
             </div>
           )}
 

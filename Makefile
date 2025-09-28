@@ -134,5 +134,11 @@ health: ## Check services health
 	@echo "\n--- Service Health ---"
 	@curl -f http://localhost:8000/health/ || echo "Django service not responding"
 
-parse:
+books:
 	$(PYTHON) manage.py parse_books
+
+tags:
+	$(PYTHON) manage.py create_default_tags
+
+assign:
+	$(PYTHON) manage.py assign_tags_to_books
