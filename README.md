@@ -350,10 +350,19 @@ docker run -d -p 6379:6379 --name redis redis:alpine
 celery -A config beat -l info
 ```
 
-```markdown
+```bash
 -A config - указывает где находится Celery-приложение
 beat - запускает Celery Beat — компонент, который периодически отправляет задачи в очередь
 -l info - уровень логирования (DEBUG, INFO, WARNING, ERROR)
+```
+
+## Команды для приложения
+
+### в командной строке:
+```bash
+python manage.py create_default_tags        # Заполнить БД стандартными тэгами
+python manage.py assign_tags_to_books       # Назначить тэги для книг
+python manage.py parse_books                # Запустить парсер книг
 ```
 
 ## 📄 Лицензия

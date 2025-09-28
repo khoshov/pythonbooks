@@ -6,7 +6,7 @@ import BookFilters from './BookFilters';
 import { Button } from '@/components/ui/button';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { booksApi } from '@/lib/api';
-import type { Book, Publisher } from '@/types';
+import type { Book, Publisher, Tag } from '@/types';
 
 interface BooksListProps {
   onBookClick: (book: Book) => void;
@@ -21,6 +21,7 @@ export default function BooksList({
 }: BooksListProps) {
   const [books, setBooks] = useState<Book[]>([]);
   const [publishers, setPublishers] = useState<Publisher[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [nextPage, setNextPage] = useState<string | null>(null);
@@ -28,7 +29,7 @@ export default function BooksList({
     search: '',
     category: '',
     publisher: '',
-    sort: '-created',
+    ordering: '-created',
     page: 1,
   });
 
@@ -41,8 +42,12 @@ export default function BooksList({
     }
 
     try {
+      // Create a new params object without the category property
+      const { category, ...restFilters } = filters;
       const params = {
-        ...filters,
+        ...restFilters,
+        // Map category filter to tag parameter for backend
+        tag: category,
         page: isLoadMore ? filters.page + 1 : 1,
       };
 
@@ -67,9 +72,13 @@ export default function BooksList({
 
   const loadInitialData = async () => {
     try {
-      const publishersResponse = await booksApi.getPublishers();
+      const [publishersResponse, tagsResponse] = await Promise.all([
+        booksApi.getPublishers(),
+        booksApi.getTags()
+      ]);
       
       setPublishers(publishersResponse);
+      setTags(tagsResponse);
     } catch (error) {
       console.error('Error loading initial data:', error);
     }
@@ -81,7 +90,7 @@ export default function BooksList({
 
   useEffect(() => {
     loadBooks();
-  }, [filters.search, filters.category, filters.publisher, filters.sort]);
+  }, [filters.search, filters.category, filters.publisher, filters.ordering]);
 
   const handleSearch = (search: string) => {
     setFilters(prev => ({ ...prev, search, page: 1 }));
@@ -97,8 +106,8 @@ export default function BooksList({
     setFilters(prev => ({ ...prev, publisher: publisherValue, page: 1 }));
   };
 
-  const handleSortChange = (sort: string) => {
-    setFilters(prev => ({ ...prev, sort, page: 1 }));
+  const handleSortChange = (ordering: string) => {
+    setFilters(prev => ({ ...prev, ordering, page: 1 }));
   };
 
   const handleLoadMore = () => {
@@ -118,6 +127,7 @@ export default function BooksList({
     <div>
       <BookFilters
         publishers={publishers}
+        tags={tags}
         onSearch={handleSearch}
         onCategoryChange={handleCategoryChange}
         onPublisherChange={handlePublisherChange}

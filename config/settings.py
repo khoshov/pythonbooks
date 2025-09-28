@@ -162,6 +162,7 @@ CELERY_BEAT_SCHEDULE = {
 # ====================
 # Настройки CORS (Cross-Origin Resource Sharing)
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
+CORS_ALLOW_ALL_ORIGINS = True  # Разрешить все источники (только для разработки!)
 
 # Разрешить куки и заголовки авторизации
 CORS_ALLOW_CREDENTIALS = True

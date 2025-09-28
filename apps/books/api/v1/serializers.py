@@ -40,6 +40,10 @@ class BookSerializer(serializers.ModelSerializer):
             "publisher",
             "published_at",
             "cover_image",
+            "description",
+            "isbn_code",
+            "total_pages",
+            "language",
         ]
 
 
@@ -49,11 +53,6 @@ class BookDetailSerializer(BookSerializer):
 
     class Meta(BookSerializer.Meta):
         fields = BookSerializer.Meta.fields + [
-            "description",
-            "isbn_code",
-            "total_pages",
-            "cover_image",
-            "language",
             "tags",
             "comments",
         ]

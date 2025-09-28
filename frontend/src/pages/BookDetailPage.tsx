@@ -105,7 +105,10 @@ export default function BookDetailPage() {
               <div className="flex flex-wrap gap-2 mb-4">
                 <Badge variant="outline" className="flex items-center">
                   <User className="mr-1 h-3 w-3" />
-                  {book.author.map(a => `${a.first_name} ${a.last_name}`).join(', ')}
+                  {book.author && book.author.length > 0 
+                    ? book.author.map(a => `${a.first_name} ${a.last_name}`).join(', ')
+                    : 'Автор не указан'
+                  }
                 </Badge>
                 <Badge variant="outline" className="flex items-center">
                   <Building className="mr-1 h-3 w-3" />
@@ -115,7 +118,7 @@ export default function BookDetailPage() {
                   <Calendar className="mr-1 h-3 w-3" />
                   {new Date(book.published_at).getFullYear()}
                 </Badge>
-                {book.total_pages && (
+                {book.total_pages !== null && book.total_pages !== undefined && book.total_pages > 0 && (
                   <Badge variant="outline" className="flex items-center">
                     <FileText className="mr-1 h-3 w-3" />
                     {book.total_pages} стр.

@@ -1,5 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
+from rest_framework.filters import OrderingFilter
+from rest_framework.permissions import AllowAny
 
 from ...models import (
     Author,
@@ -22,24 +24,36 @@ from .serializers import (
 class PublisherViewSet(viewsets.ModelViewSet):
     queryset = Publisher.objects.all()
     serializer_class = PublisherSerializer
+    permission_classes = [AllowAny]
 
 
 class AuthorViewSet(viewsets.ModelViewSet):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
+    permission_classes = [AllowAny]
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = [AllowAny]
 
 
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.select_related("publisher").prefetch_related(
         "author__books", "tags"
     )
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = BookFilter
+    ordering_fields = [
+        "title",
+        "published_at",
+        "created",
+        "publisher__name",
+        "author__last_name",
+    ]
+    ordering = ["-created"]
+    permission_classes = [AllowAny]
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -50,6 +64,7 @@ class BookViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.select_related("user", "book")
     serializer_class = CommentSerializer
+    permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

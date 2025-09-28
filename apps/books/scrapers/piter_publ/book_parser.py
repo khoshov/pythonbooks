@@ -77,46 +77,57 @@ class BookParser:
     def extract_authors(self) -> List[Dict[str, str]]:
         try:
             authors = []
-            author_blocks = self.soup.select("#tab-2 .autor-wrapper")
+            author_blocks = self.soup.select(".autor-wrapper")
+            if not author_blocks:
+                author_blocks = self.soup.select("#tab-2 .autor-wrapper")
+
+            logger.info(f"found {len(author_blocks)} author blocks")
 
             for block in author_blocks:
                 name_tag = block.select_one("h2")
                 if name_tag:
                     full_name = name_tag.get_text(strip=True)
-                    parts = full_name.split()
-                    if len(parts) == 1:
-                        last_name = parts[0]
-                        first_name = ""
-                    elif len(parts) == 2:
-                        last_name, first_name = parts
-                    elif len(parts) >= 3:
-                        first_name = parts[1]
-                        last_name = " ".join([parts[0]] + parts[2:])
+                else:
+                    name_element = block.find(["h1", "h3", "h4", "h5", "h6"])
+                    if name_element:
+                        full_name = name_element.get_text(strip=True)
                     else:
-                        last_name = ""
-                        first_name = ""
-                        logger.warning(f"empty author name: {full_name}")
+                        full_name = (
+                            block.get_text(strip=True).split("\n")[0]
+                            if block.get_text(strip=True)
+                            else ""
+                        )
 
-                    description_block = name_tag.parent
-                    bio_parts = []
-                    for bio in description_block.contents:
-                        if bio != name_tag and isinstance(bio, str):
-                            bio_parts.append(bio.strip())
-                    bio = " ".join(bio_parts).strip()
+                if not full_name:
+                    continue
 
-                    authors.append(
-                        {
-                            "first_name": first_name.strip("."),
-                            "last_name": last_name,
-                            "bio": bio,
-                        }
-                    )
+                parts = full_name.split()
+                if len(parts) >= 2:
+                    first_name = parts[0]
+                    last_name = " ".join(parts[1:])
+                elif len(parts) == 1:
+                    first_name = ""
+                    last_name = parts[0]
+                else:
+                    first_name = ""
+                    last_name = ""
 
-            logger.info(f"parsed {len(authors)} authors from tab-2")
+                full_text = block.get_text(separator=" ", strip=True)
+                bio = full_text.replace(full_name, "", 1).strip()
+
+                authors.append(
+                    {
+                        "first_name": first_name.strip("."),
+                        "last_name": last_name,
+                        "bio": bio,
+                    }
+                )
+
+            logger.info(f"parsed {len(authors)} authors")
             return authors
         except Exception as e:
-            logger.error(f"failed to parse authors from tab-2: {str(e)}")
-            logger.exception("tab-2 author parsing error details")
+            logger.error(f"failed to parse authors: {str(e)}")
+            logger.exception("author parsing error details")
             return []
 
     def extract_author_bio(self) -> str:

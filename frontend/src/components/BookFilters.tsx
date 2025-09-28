@@ -10,10 +10,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useState } from 'react';
-import type { Publisher } from '@/types';
+import type { Publisher, Tag } from '@/types';
 
 interface BookFiltersProps {
   publishers: Publisher[];
+  tags: Tag[];
   onSearch: (query: string) => void;
   onCategoryChange: (category: string) => void;
   onPublisherChange: (publisherId: string) => void;
@@ -22,6 +23,7 @@ interface BookFiltersProps {
 
 export default function BookFilters({
   publishers,
+  tags,
   onSearch,
   onCategoryChange,
   onPublisherChange,
@@ -57,19 +59,18 @@ export default function BookFilters({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Категория</label>
+            <label className="text-sm font-medium">Теги</label>
             <Select onValueChange={onCategoryChange}>
               <SelectTrigger>
-                <SelectValue placeholder="Все категории" />
+                <SelectValue placeholder="Все теги" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Все категории</SelectItem>
-                <SelectItem value="beginner">Начальный</SelectItem>
-                <SelectItem value="intermediate">Средний</SelectItem>
-                <SelectItem value="advanced">Продвинутый</SelectItem>
-                <SelectItem value="web">Веб-разработка</SelectItem>
-                <SelectItem value="data">Наука о данных</SelectItem>
-                <SelectItem value="ml">Машинное обучение</SelectItem>
+                <SelectItem value="all">Все теги</SelectItem>
+                {tags.map((tag) => (
+                  <SelectItem key={tag.id} value={tag.id.toString()}>
+                    {tag.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -95,14 +96,19 @@ export default function BookFilters({
             <label className="text-sm font-medium">Сортировать по</label>
             <Select defaultValue="-created" onValueChange={onSortChange}>
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue placeholder="Новейшие" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="-created">Новейшие</SelectItem>
+                <SelectItem value="created">Старейшие</SelectItem>
                 <SelectItem value="title">Название от А до Я</SelectItem>
                 <SelectItem value="-title">Название от Я до А</SelectItem>
-                <SelectItem value="published_at">Старейшие</SelectItem>
-                <SelectItem value="-published_at">Последние опубликованные</SelectItem>
+                <SelectItem value="published_at">По дате публикации (возр.)</SelectItem>
+                <SelectItem value="-published_at">По дате публикации (убыв.)</SelectItem>
+                <SelectItem value="author__last_name">Авторы (А-Я)</SelectItem>
+                <SelectItem value="-author__last_name">Авторы (Я-А)</SelectItem>
+                <SelectItem value="publisher__name">Издательство (А-Я)</SelectItem>
+                <SelectItem value="-publisher__name">Издательство (Я-А)</SelectItem>
               </SelectContent>
             </Select>
           </div>

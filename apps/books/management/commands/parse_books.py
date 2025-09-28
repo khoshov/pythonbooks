@@ -45,14 +45,23 @@ class AsyncBookFetcher(BaseScraper):
                 return None
 
             parser = BookParser(html)
+            # Extract parameters first
+            params = parser.extract_all_params()
+
             book_data = {
                 "url": url,
                 "book_title": parser.extract_book_name().get("book_title", ""),
                 "author": parser.extract_authors(),
-                "price": parser.extract_price(),
-                "details": parser.extract_all_params(),
                 "description": parser.extract_description().get("description", ""),
-                "cover": parser.extract_cover_image(),
+                "cover": {
+                    "cover_image": parser.extract_cover_image().get("cover_image", "")
+                },
+                "details": {
+                    "ISBN": params.get("ISBN", ""),
+                    "Год": params.get("Год", ""),
+                    "Страниц": int(params.get("Страниц", "0")) or 0,
+                },
+                "price": parser.extract_price(),
             }
             logger.debug(f"parsed book data for: {book_data['book_title']}")
             return book_data

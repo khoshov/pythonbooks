@@ -28,6 +28,8 @@ class BookInput(BaseModel):
     author: List[AuthorInput]
     cover: CoverInput
     details: BookDetails
+    url: Optional[str] = None
+    price: Optional[dict] = None
 
     @field_validator("details")
     @classmethod

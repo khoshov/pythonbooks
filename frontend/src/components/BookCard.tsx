@@ -48,7 +48,10 @@ export default function BookCard({ book, onClick }: BookCardProps) {
             <div className="flex items-center">
               <User className="h-4 w-4 mr-2 flex-shrink-0" />
               <span className="line-clamp-1">
-                {book.author.map(a => `${a.first_name} ${a.last_name}`).join(', ')}
+                {book.author && book.author.length > 0 
+                  ? book.author.map(a => `${a.first_name} ${a.last_name}`).join(', ')
+                  : 'Автор не указан'
+                }
               </span>
             </div>
             
@@ -62,7 +65,7 @@ export default function BookCard({ book, onClick }: BookCardProps) {
               <span>{new Date(book.published_at).getFullYear()}</span>
             </div>
             
-            {book.total_pages && (
+            {book.total_pages !== null && book.total_pages !== undefined && book.total_pages > 0 && (
               <div className="flex items-center">
                 <FileText className="h-4 w-4 mr-2 flex-shrink-0" />
                 <span>{book.total_pages} стр.</span>

@@ -1,4 +1,4 @@
-from django_filters import CharFilter, DateFilter, FilterSet
+from django_filters import CharFilter, DateFilter, FilterSet, NumberFilter
 
 from ...models import Book
 
@@ -11,13 +11,16 @@ class BookFilter(FilterSet):
         field_name="author__last_name",
         lookup_expr="icontains",
     )
-    publisher = CharFilter(
-        field_name="publisher__name",
-        lookup_expr="icontains",
+    publisher = NumberFilter(
+        field_name="publisher__id",
     )
-    tag = CharFilter(
+    tag = NumberFilter(
+        field_name="tags__id",
+        lookup_expr="exact",
+    )
+    tag_name = CharFilter(
         field_name="tags__name",
-        lookup_expr="iexact",
+        lookup_expr="icontains",
     )
     language = CharFilter(
         lookup_expr="iexact",
