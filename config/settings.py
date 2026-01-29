@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_filters",
     "rest_framework",
+    "django_elasticsearch_dsl",
+    "django_elasticsearch_dsl_drf",
     # Project apps
     "books",
 ]
@@ -137,8 +139,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ====================
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 20,
+    "DEFAULT_PAGINATION_CLASS": "books.api.v1.pagination.CustomPageNumberPagination",
+    "PAGE_SIZE": 100,
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
@@ -157,6 +159,12 @@ CELERY_BEAT_SCHEDULE = {
     }
 }
 
+# ====================
+# Elasticsearch configuration
+# ====================
+ELASTICSEARCH_DSL = {
+    "default": {"hosts": os.getenv("ELASTICSEARCH_HOSTS", "elasticsearch:9200")},
+}
 # ====================
 # CORS SETTINGS
 # ====================
