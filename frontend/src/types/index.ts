@@ -37,6 +37,7 @@ export interface Book {
   isbn_code?: string;
   total_pages?: number;
   language?: string;
+  url?: string;
   tags?: Tag[];
   comments?: Comment[];
 }

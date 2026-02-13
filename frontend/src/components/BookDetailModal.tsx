@@ -135,7 +135,10 @@ export default function BookDetailModal({ bookId, open, onOpenChange }: BookDeta
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">
-                    <Button>
+                    <Button
+                      onClick={() => book.url && window.open(book.url, '_blank', 'noopener,noreferrer')}
+                      disabled={!book.url}
+                    >
                       <ExternalLink className="mr-2 h-4 w-4" />
                       Посмотреть на {book.publisher.name}
                     </Button>

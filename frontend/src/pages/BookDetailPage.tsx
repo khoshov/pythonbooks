@@ -149,7 +149,10 @@ export default function BookDetailPage() {
 
               {/* Action Buttons */}
               <div className="flex gap-2 mb-6">
-                <Button>
+                <Button
+                  onClick={() => book.url && window.open(book.url, '_blank', 'noopener,noreferrer')}
+                  disabled={!book.url}
+                >
                   <ExternalLink className="mr-2 h-4 w-4" />
                   Посмотреть на {book.publisher.name}
                 </Button>

@@ -44,6 +44,7 @@ class BookSerializer(serializers.ModelSerializer):
             "isbn_code",
             "total_pages",
             "language",
+            "url",
         ]
 
 
