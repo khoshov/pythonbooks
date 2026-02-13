@@ -34,12 +34,12 @@ class BookDocumentView(DocumentViewSet):
 
     # Поля для полнотекстового поиска
     search_fields = {
-        "title": {"boost": 4, "analyzer": "standard"},
-        "description": {"boost": 2, "analyzer": "standard"},
-        "author.first_name": {"boost": 3, "analyzer": "standard"},
-        "author.last_name": {"boost": 3, "analyzer": "standard"},
-        "publisher.name": {"boost": 1, "analyzer": "standard"},
-        "tags.name": {"boost": 1, "analyzer": "standard"},
+        "title": {"boost": 4, "fuzziness": 1, "prefix_length": 0},
+        "description": {"boost": 2, "fuzziness": 1, "prefix_length": 0},
+        "author.first_name": {"boost": 3, "fuzziness": 1, "prefix_length": 0},
+        "author.last_name": {"boost": 3, "fuzziness": 1, "prefix_length": 0},
+        "publisher.name": {"boost": 1, "fuzziness": 1, "prefix_length": 0},
+        "tags.name": {"boost": 1, "fuzziness": 1, "prefix_length": 0},
     }
 
     # Поля для точной фильтрации

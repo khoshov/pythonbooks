@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Author, Book, Publisher, Tag, PaginatedResponse } from '@/types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001/api/v1';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -19,6 +19,18 @@ export const booksApi = {
     page?: number;
   }): Promise<PaginatedResponse<Book>> => {
     const response = await api.get('/books/', { params });
+    return response.data;
+  },
+
+  searchBooks: async (params?: {
+    search?: string;
+    author?: string;
+    tag?: string;
+    publisher?: string;
+    ordering?: string;
+    page?: number;
+  }): Promise<PaginatedResponse<Book>> => {
+    const response = await api.get('/search/', { params });
     return response.data;
   },
 

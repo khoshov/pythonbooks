@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import BooksList from '@/components/BooksList';
@@ -6,18 +7,22 @@ import type { Book } from '@/types';
 
 export default function HomePage() {
   const navigate = useNavigate();
-  
+  const [searchQuery, setSearchQuery] = useState('');
+
   const handleBookClick = (book: Book) => {
     navigate(`/book/${book.id}`);
   };
 
   const handleSearch = (query: string) => {
-    // This will be handled by the BooksList component
-    console.log('Search query:', query);
+    setSearchQuery(query);
+  };
+
+  const handleSearchQueryChange = (query: string) => {
+    setSearchQuery(query);
   };
 
   return (
-    <Layout onSearch={handleSearch}>
+    <Layout onSearch={handleSearch} searchQuery={searchQuery} onSearchQueryChange={handleSearchQueryChange}>
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/20 rounded-lg p-8 mb-8 text-center">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">Книги по Python</h1>
@@ -37,7 +42,7 @@ export default function HomePage() {
       </div>
 
       {/* Books List */}
-      <BooksList onBookClick={handleBookClick} />
+      <BooksList onBookClick={handleBookClick} searchQuery={searchQuery} />
     </Layout>
   );
 }

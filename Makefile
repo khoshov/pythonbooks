@@ -142,3 +142,23 @@ tags:
 
 assign:
 	$(PYTHON) manage.py assign_tags_to_books
+
+# ======================
+# ELASTICSEARCH
+# ======================
+.PHONY: elastic-create elastic-delete elastic-populate elastic-rebuild elastic-status
+
+elastic-create: ## Create Elasticsearch indices
+	$(PYTHON) manage.py search_index --create
+
+elastic-delete: ## Delete Elasticsearch indices
+	$(PYTHON) manage.py search_index --delete --force
+
+elastic-populate: ## Populate Elasticsearch indices
+	$(PYTHON) manage.py search_index --populate
+
+elastic-rebuild: elastic-delete elastic-create elastic-populate ## Rebuild Elasticsearch indices (delete, create, populate)
+	@echo "Elasticsearch indices rebuilt successfully"
+
+elastic-status: ## Show Elasticsearch indices status
+	$(PYTHON) manage.py search_index --status

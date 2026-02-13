@@ -12,12 +12,14 @@ interface BooksListProps {
   onBookClick: (book: Book) => void;
   enableLazyLoading?: boolean;
   enableInfiniteScroll?: boolean;
+  searchQuery?: string;
 }
 
-export default function BooksList({ 
-  onBookClick, 
-  enableLazyLoading = true, 
-  enableInfiniteScroll = true 
+export default function BooksList({
+  onBookClick,
+  enableLazyLoading = true,
+  enableInfiniteScroll = true,
+  searchQuery = ''
 }: BooksListProps) {
   const [books, setBooks] = useState<Book[]>([]);
   const [authors, setAuthors] = useState<Author[]>([]);
@@ -54,7 +56,10 @@ export default function BooksList({
       if (filters.publisher) params.publisher = filters.publisher;
       if (filters.ordering) params.ordering = filters.ordering;
 
-      const response = await booksApi.getBooks(params);
+      // Use search API if there's a non-empty search query, otherwise use regular books API
+      const response = searchQuery && searchQuery.trim()
+        ? await booksApi.searchBooks({ ...params, search: searchQuery.trim() })
+        : await booksApi.getBooks(params);
       
       if (isLoadMore) {
         setBooks(prev => [...prev, ...response.results]);
@@ -95,7 +100,7 @@ export default function BooksList({
 
   useEffect(() => {
     loadBooks();
-  }, [filters.author, filters.category, filters.publisher, filters.ordering]);
+  }, [filters.author, filters.category, filters.publisher, filters.ordering, searchQuery]);
 
   const handleAuthorChange = (author: string) => {
     const authorValue = author === 'all' ? '' : author;

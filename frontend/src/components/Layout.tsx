@@ -12,10 +12,11 @@ import {
 interface LayoutProps {
   children: React.ReactNode;
   onSearch?: (query: string) => void;
+  searchQuery?: string;
+  onSearchQueryChange?: (query: string) => void;
 }
 
-export default function Layout({ children, onSearch }: LayoutProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+export default function Layout({ children, onSearch, searchQuery = '', onSearchQueryChange }: LayoutProps) {
   const [isDark, setIsDark] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -45,7 +46,7 @@ export default function Layout({ children, onSearch }: LayoutProps) {
                   type="text"
                   placeholder="Поиск книг..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => onSearchQueryChange?.(e.target.value)}
                   className="w-64"
                 />
                 <Button type="submit" size="sm">
