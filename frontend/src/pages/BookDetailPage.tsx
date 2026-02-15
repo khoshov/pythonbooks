@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import BookImage from '@/components/BookImage';
 import Layout from '@/components/Layout';
+import { AuthorAuthorityBadge } from '@/components/AuthorAuthorityBadge';
 import { booksApi } from '@/lib/api';
 import type { Book } from '@/types';
 
@@ -102,13 +103,25 @@ export default function BookDetailPage() {
             <div>
               <h1 className="text-3xl font-bold mb-4">{book.title}</h1>
               
+              {/* Authors with authority badges */}
+              {book.author && book.author.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {book.author.map((author) => (
+                    <div key={author.id} className="flex items-center gap-1">
+                      <Badge variant="outline" className="flex items-center">
+                        <User className="mr-1 h-3 w-3" />
+                        {author.first_name} {author.last_name}
+                      </Badge>
+                      <AuthorAuthorityBadge author={author} />
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <div className="flex flex-wrap gap-2 mb-4">
                 <Badge variant="outline" className="flex items-center">
-                  <User className="mr-1 h-3 w-3" />
-                  {book.author && book.author.length > 0 
-                    ? book.author.map(a => `${a.first_name} ${a.last_name}`).join(', ')
-                    : 'Автор не указан'
-                  }
+                  <Building className="mr-1 h-3 w-3" />
+                  {book.publisher.name}
                 </Badge>
                 <Badge variant="outline" className="flex items-center">
                   <Building className="mr-1 h-3 w-3" />

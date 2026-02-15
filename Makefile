@@ -122,7 +122,7 @@ prod-down: ## Stop production environment
 # ======================
 # UTILITIES
 # ======================
-.PHONY: backup restore health
+.PHONY: backup restore health authority
 backup: ## Create database backup
 	$(DOCKER_COMPOSE) exec postgres pg_dump -U $$POSTGRES_USER $$POSTGRES_DB > backup_$$(date +%Y%m%d_%H%M%S).sql
 
@@ -142,6 +142,13 @@ tags:
 
 assign:
 	$(PYTHON) manage.py assign_tags_to_books
+
+authority: ## Update author authority scores using LLM
+	$(PYTHON) manage.py shell -c "
+	from books.tasks import update_all_authors_authority_task
+	result = update_all_authors_authority_task.delay()
+	print(f'Scheduled authority update task: {result.id}')
+	"
 
 # ======================
 # ELASTICSEARCH

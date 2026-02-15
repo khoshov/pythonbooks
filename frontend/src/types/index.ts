@@ -1,8 +1,34 @@
+export interface Credentials {
+  publications?: string[];
+  citations?: number;
+  awards?: string[];
+  positions?: string[];
+  companies?: string[];
+  expertise?: string[];
+  github_stats?: {
+    stars?: number;
+    followers?: number;
+    contributions?: number;
+  };
+  pypi_stats?: {
+    packages?: string[];
+    total_downloads?: number;
+  };
+  stackoverflow?: {
+    reputation?: number;
+    python_answers?: number;
+  };
+  conferences?: string[];
+  certifications?: string[];
+}
+
 export interface Author {
   id: number;
   first_name: string;
   last_name: string;
   bio: string;
+  authority_score?: number;
+  credentials?: Credentials;
 }
 
 export interface Publisher {
